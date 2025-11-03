@@ -56,6 +56,9 @@ jobs:
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
       
+      - name: Export SDK_PATH
+        run: echo "SDK_PATH=$ANDROID_SDK_ROOT" >> $GITHUB_ENV
+      
       - name: Install Android NDK
         run: |
           echo "y" | sdkmanager --install "ndk;${{ env.NDK_VERSION }}"
