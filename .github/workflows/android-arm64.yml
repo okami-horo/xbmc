@@ -11,7 +11,6 @@ jobs:
     timeout-minutes: 240
 
     env:
-      ANDROID_SDK_ROOT: ${{ env.ANDROID_HOME }}
       BUILD_DIR: ${{ github.workspace }}/build-android
       DEPS_PREFIX: $HOME/android-tools/xbmc-depends
       DEPS_TARBALLS: $HOME/android-tools/xbmc-tarballs
