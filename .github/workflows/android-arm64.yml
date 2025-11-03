@@ -1,0 +1,118 @@
+name: Android arm64 APK
+
+on:
+  workflow_dispatch:
+  pull_request:
+
+jobs:
+  build-arm64:
+    name: Build Android arm64 APK
+    runs-on: ubuntu-22.04
+    timeout-minutes: 240
+
+    env:
+      ANDROID_SDK_ROOT: ${{ env.ANDROID_HOME }}
+      BUILD_DIR: ${{ github.workspace }}/build-android
+      DEPS_PREFIX: $HOME/android-tools/xbmc-depends
+      DEPS_TARBALLS: $HOME/android-tools/xbmc-tarballs
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Java 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+
+      - name: Set up Android SDK and NDK
+        uses: android-actions/setup-android@v3
+        with:
+          packages: |
+            platform-tools
+            "platforms;android-36"
+            "build-tools;36.0.0"
+            "ndk;28.2.13676358"
+
+      - name: Install build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            autoconf bison build-essential curl flex gawk git gperf \
+            lib32stdc++6 lib32z1 lib32z1-dev libcurl4-openssl-dev \
+            unzip zip zlib1g-dev ccache
+
+      - name: Cache ccache
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ccache
+          key: ccache-android-arm64-${{ runner.os }}-${{ hashFiles('**/CMakeLists.txt', '**/*.cmake') }}
+          restore-keys: |
+            ccache-android-arm64-${{ runner.os }}-
+
+      - name: Cache depends (tarballs and prefix)
+        uses: actions/cache@v4
+        with:
+          path: |
+            ${{ env.DEPS_TARBALLS }}
+            ${{ env.DEPS_PREFIX }}
+          key: xbmc-depends-${{ runner.os }}-arm64-${{ hashFiles('tools/depends/**') }}
+          restore-keys: |
+            xbmc-depends-${{ runner.os }}-arm64-
+
+      - name: Prepare Android debug keystore (for signing)
+        run: |
+          mkdir -p ~/.android
+          if [ ! -f ~/.android/debug.keystore ]; then
+            keytool -genkey -keystore ~/.android/debug.keystore -v \
+              -alias androiddebugkey -dname "CN=Android Debug,O=Android,C=US" \
+              -keypass android -storepass android -keyalg RSA -keysize 2048 -validity 10000
+          fi
+
+      - name: Build tools/depends (aarch64)
+        working-directory: tools/depends
+        env:
+          MAKEFLAGS: "-j$(nproc)"
+        run: |
+          ./bootstrap
+          ./configure \
+            --with-tarballs="${DEPS_TARBALLS}" \
+            --host=aarch64-linux-android \
+            --with-sdk-path="${ANDROID_SDK_ROOT}" \
+            --prefix="${DEPS_PREFIX}"
+          make
+
+      - name: Generate CMake build system
+        run: |
+          mkdir -p "${BUILD_DIR}"
+          make -C tools/depends/target/cmakebuildsys BUILD_DIR="${BUILD_DIR}"
+
+      - name: Build Kodi (Release)
+        working-directory: ${{ env.BUILD_DIR }}
+        env:
+          MAKEFLAGS: "-j$(nproc)"
+        run: |
+          make
+
+      - name: Package APK
+        working-directory: ${{ env.BUILD_DIR }}
+        run: |
+          make apk
+          ls -lah "${GITHUB_WORKSPACE}"/*app-*.apk || true
+
+      - name: Find APK
+        id: find-apk
+        shell: bash
+        run: |
+          set -e
+          APK=$(ls -1 "${GITHUB_WORKSPACE}"/*app-*.apk 2>/dev/null | head -n1 || true)
+          echo "apk_path=${APK}" >> "$GITHUB_OUTPUT"
+
+      - name: Upload APK artifact
+        if: steps.find-apk.outputs.apk_path != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-arm64-apk
+          path: ${{ steps.find-apk.outputs.apk_path }}
+          if-no-files-found: error
