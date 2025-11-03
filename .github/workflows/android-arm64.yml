@@ -83,6 +83,8 @@ jobs:
           make
 
       - name: Generate CMake build system
+        env:
+          CMAKE_BUILD_TYPE: Release
         run: |
           mkdir -p "${BUILD_DIR}"
           make -C tools/depends/target/cmakebuildsys BUILD_DIR="${BUILD_DIR}"
@@ -91,6 +93,7 @@ jobs:
         working-directory: ${{ env.BUILD_DIR }}
         env:
           MAKEFLAGS: "-j$(nproc)"
+          CMAKE_BUILD_TYPE: Release
         run: |
           make
 
@@ -109,7 +112,7 @@ jobs:
           echo "apk_path=${APK}" >> "$GITHUB_OUTPUT"
 
       - name: Upload APK artifact
-        if: steps.find-apk.outputs.apk_path != ''
+        if: ${{ steps.find-apk.outputs.apk_path != '' }}
         uses: actions/upload-artifact@v4
         with:
           name: android-arm64-apk
