@@ -1,0 +1,283 @@
+name: Android ARM64 APK Build and Release
+
+on:
+  push:
+    branches:
+      - master
+    tags:
+      - 'v*.*.*'
+  pull_request:
+    branches:
+      - master
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: 'Release tag (e.g., v20.0.0)'
+        required: false
+        type: string
+
+env:
+  BUILDTHREADS: 4
+  NDK_VERSION: "28.2.13676358"
+  NDK_API: "24"
+  Configuration: "RelWithDebInfo"
+  TARBALLS: "/opt/xbmc-tarballs"
+
+jobs:
+  build:
+    name: Build Android ARM64 APK
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          lfs: true
+      
+      - name: Free Disk Space
+        uses: jlumbroso/free-disk-space@v1.3.1
+        with:
+          tool-cache: false
+          android: false
+          dotnet: true
+          haskell: true
+          large-packages: true
+          docker-images: true
+          swap-storage: true
+      
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+          cache: 'gradle'
+      
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+      
+      - name: Install Android NDK
+        run: |
+          echo "y" | sdkmanager --install "ndk;${{ env.NDK_VERSION }}"
+          echo "ANDROID_NDK_HOME=$ANDROID_SDK_ROOT/ndk/${{ env.NDK_VERSION }}" >> $GITHUB_ENV
+          echo "ANDROID_NDK=$ANDROID_SDK_ROOT/ndk/${{ env.NDK_VERSION }}" >> $GITHUB_ENV
+      
+      - name: Cache Dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+            ${{ env.TARBALLS }}
+            tools/depends/xbmc-depends
+          key: ${{ runner.os }}-android-arm64-${{ hashFiles('**/build.gradle*', 'tools/depends/**') }}
+          restore-keys: |
+            ${{ runner.os }}-android-arm64-
+      
+      - name: Install Build Dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            autoconf automake autopoint gettext autotools-dev \
+            cmake curl default-jre gawk gcc gperf \
+            libtool nasm ninja-build python3-dev \
+            python3-pip swig unzip zip zlib1g-dev \
+            libbz2-dev libcurl4-openssl-dev libssl-dev \
+            liblzo2-dev libtinyxml-dev uuid-dev
+      
+      - name: Create Tarballs Directory
+        run: |
+          sudo mkdir -p ${{ env.TARBALLS }}
+          sudo chmod 777 ${{ env.TARBALLS }}
+      
+      - name: Configure Dependencies
+        run: |
+          export WORKSPACE=${{ github.workspace }}
+          export XBMC_PLATFORM_DIR=android
+          cd tools/buildsteps/android-arm64-v8a
+          bash prepare-depends
+      
+      - name: Build Dependencies
+        run: |
+          export WORKSPACE=${{ github.workspace }}
+          export XBMC_PLATFORM_DIR=android
+          export BUILDTHREADS=${{ env.BUILDTHREADS }}
+          cd tools/buildsteps/android-arm64-v8a
+          bash configure-depends
+          bash make-depends
+      
+      - name: Configure Kodi
+        run: |
+          export WORKSPACE=${{ github.workspace }}
+          export XBMC_PLATFORM_DIR=android
+          cd tools/buildsteps/android-arm64-v8a
+          bash prepare-xbmc
+          bash configure-xbmc
+      
+      - name: Build Kodi
+        run: |
+          export WORKSPACE=${{ github.workspace }}
+          export XBMC_PLATFORM_DIR=android
+          export BUILDTHREADS=${{ env.BUILDTHREADS }}
+          cd tools/buildsteps/android-arm64-v8a
+          bash make-xbmc
+      
+      - name: Build Binary Addons
+        run: |
+          export WORKSPACE=${{ github.workspace }}
+          export XBMC_PLATFORM_DIR=android
+          export BUILDTHREADS=${{ env.BUILDTHREADS }}
+          cd tools/buildsteps/android-arm64-v8a
+          bash make-binary-addons
+        continue-on-error: true
+      
+      - name: Package APK
+        id: package
+        run: |
+          export WORKSPACE=${{ github.workspace }}
+          export XBMC_PLATFORM_DIR=android
+          export BUILDTHREADS=${{ env.BUILDTHREADS }}
+          cd tools/buildsteps/android-arm64-v8a
+          bash package
+          
+          # Find the generated APK
+          APK_FILE=$(find ${{ github.workspace }} -name "kodi-*-arm64-v8a.apk" -type f | head -n 1)
+          if [ -z "$APK_FILE" ]; then
+            echo "Error: APK file not found"
+            exit 1
+          fi
+          
+          echo "apk_path=$APK_FILE" >> $GITHUB_OUTPUT
+          echo "apk_name=$(basename $APK_FILE)" >> $GITHUB_OUTPUT
+          
+          # Calculate SHA256
+          SHA256=$(sha256sum "$APK_FILE" | cut -d' ' -f1)
+          echo "apk_sha256=$SHA256" >> $GITHUB_OUTPUT
+          
+          echo "APK built successfully: $APK_FILE"
+          echo "SHA256: $SHA256"
+      
+      - name: Upload APK Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: kodi-android-arm64-apk
+          path: ${{ steps.package.outputs.apk_path }}
+          retention-days: 30
+          compression-level: 0
+      
+      - name: Upload Build Info
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-info
+          path: |
+            build/CMakeCache.txt
+            build/compile_commands.json
+          retention-days: 7
+        continue-on-error: true
+
+  release:
+    name: Create GitHub Release
+    runs-on: ubuntu-latest
+    needs: build
+    if: startsWith(github.ref, 'refs/tags/v') || github.event_name == 'workflow_dispatch'
+    permissions:
+      contents: write
+    
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Download APK Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: kodi-android-arm64-apk
+          path: ./release
+      
+      - name: Generate Release Notes
+        id: release_notes
+        run: |
+          if [ "${{ github.event_name }}" == "workflow_dispatch" ] && [ -n "${{ github.event.inputs.release_tag }}" ]; then
+            TAG_NAME="${{ github.event.inputs.release_tag }}"
+          else
+            TAG_NAME="${GITHUB_REF#refs/tags/}"
+          fi
+          
+          echo "tag_name=$TAG_NAME" >> $GITHUB_OUTPUT
+          
+          # Generate changelog
+          if git describe --tags --abbrev=0 HEAD^ >/dev/null 2>&1; then
+            PREV_TAG=$(git describe --tags --abbrev=0 HEAD^)
+            echo "## Changes since $PREV_TAG" > release_notes.md
+            echo "" >> release_notes.md
+            git log $PREV_TAG..HEAD --pretty=format:"- %s (%h)" >> release_notes.md
+          else
+            echo "## Initial Release" > release_notes.md
+            echo "" >> release_notes.md
+            echo "First release of Kodi Android ARM64 APK" >> release_notes.md
+          fi
+          
+          echo "" >> release_notes.md
+          echo "## Build Information" >> release_notes.md
+          echo "- **Platform**: Android ARM64-v8a" >> release_notes.md
+          echo "- **NDK Version**: ${{ env.NDK_VERSION }}" >> release_notes.md
+          echo "- **API Level**: ${{ env.NDK_API }}" >> release_notes.md
+          echo "- **Configuration**: ${{ env.Configuration }}" >> release_notes.md
+          echo "- **Build Date**: $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> release_notes.md
+          echo "- **Commit**: ${{ github.sha }}" >> release_notes.md
+          
+          # Add SHA256 checksums
+          echo "" >> release_notes.md
+          echo "## SHA256 Checksums" >> release_notes.md
+          echo '```' >> release_notes.md
+          cd release
+          sha256sum *.apk >> ../release_notes.md
+          cd ..
+          echo '```' >> release_notes.md
+      
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.release_notes.outputs.tag_name }}
+          name: Kodi ${{ steps.release_notes.outputs.tag_name }} - Android ARM64
+          body_path: release_notes.md
+          files: |
+            release/*.apk
+          draft: false
+          prerelease: ${{ contains(steps.release_notes.outputs.tag_name, 'alpha') || contains(steps.release_notes.outputs.tag_name, 'beta') || contains(steps.release_notes.outputs.tag_name, 'rc') }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Cleanup Artifacts
+        if: always()
+        uses: geekyeggo/delete-artifact@v5
+        with:
+          name: |
+            kodi-android-arm64-apk
+            build-info
+        continue-on-error: true
+
+  notify:
+    name: Build Status Notification
+    runs-on: ubuntu-latest
+    needs: [build, release]
+    if: always()
+    
+    steps:
+      - name: Check Build Status
+        run: |
+          if [ "${{ needs.build.result }}" == "success" ]; then
+            echo "✅ Android ARM64 APK build completed successfully"
+          else
+            echo "❌ Android ARM64 APK build failed"
+            exit 1
+          fi
+          
+          if [ "${{ needs.release.result }}" == "success" ]; then
+            echo "✅ Release created successfully"
+          elif [ "${{ needs.release.result }}" == "skipped" ]; then
+            echo "⏭️ Release skipped (not a tag push)"
+          else
+            echo "⚠️ Release failed or was cancelled"
+          fi
