@@ -73,7 +73,7 @@ jobs:
             ~/.gradle/wrapper
             ${{ env.TARBALLS }}
             tools/depends/xbmc-depends
-          key: ${{ runner.os }}-android-arm64-${{ hashFiles('**/build.gradle*', 'tools/depends/**') }}
+          key: ${{ runner.os }}-android-arm64-${{ hashFiles('tools/android/packaging/**/*.gradle', 'tools/depends/configure.ac', 'tools/depends/Makefile.include.in', 'tools/buildsteps/android-arm64-v8a/*') }}
           restore-keys: |
             ${{ runner.os }}-android-arm64-
       
