@@ -1,0 +1,63 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: service.dandanplay 1.0.0\n"
+"Language: en_GB\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgctxt "#30000"
+msgid "Enable Dandanplay danmaku"
+msgstr "Enable Dandanplay danmaku"
+
+msgctxt "#30001"
+msgid "App ID"
+msgstr "App ID"
+
+msgctxt "#30002"
+msgid "App secret"
+msgstr "App secret"
+
+msgctxt "#30003"
+msgid "Username"
+msgstr "Username"
+
+msgctxt "#30004"
+msgid "Password"
+msgstr "Password"
+
+msgctxt "#30005"
+msgid "Merge related danmaku sources"
+msgstr "Merge related danmaku sources"
+
+msgctxt "#30006"
+msgid "Maximum comments"
+msgstr "Maximum comments"
+
+msgctxt "#30007"
+msgid "Scroll duration (seconds)"
+msgstr "Scroll duration (seconds)"
+
+msgctxt "#30008"
+msgid "Show notifications"
+msgstr "Show notifications"
+
+msgctxt "#30009"
+msgid "Login required to request danmaku. Please configure credentials in the add-on settings."
+msgstr "Login required to request danmaku. Please configure credentials in the add-on settings."
+
+msgctxt "#30010"
+msgid "Failed to fetch danmaku from Dandanplay"
+msgstr "Failed to fetch danmaku from Dandanplay"
+
+msgctxt "#30011"
+msgid "Loaded danmaku from Dandanplay"
+msgstr "Loaded danmaku from Dandanplay"
+
+msgctxt "#30012"
+msgid "Danmaku"
+msgstr "Danmaku"
+
+msgctxt "#30013"
+msgid "Dandanplay danmaku disabled"
+msgstr "Dandanplay danmaku disabled"

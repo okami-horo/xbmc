@@ -1,0 +1,13 @@
+<settings>
+    <category label="30012">
+        <setting id="enabled" type="bool" label="30000" default="true" />
+        <setting id="app_id" type="text" label="30001" default="" />
+        <setting id="app_secret" type="text" label="30002" option="hidden" default="" />
+        <setting id="username" type="text" label="30003" default="" />
+        <setting id="password" type="text" label="30004" option="hidden" default="" />
+        <setting id="with_related" type="bool" label="30005" default="true" />
+        <setting id="max_comments" type="number" label="30006" default="3000" range="100,6000,100" />
+        <setting id="scroll_duration" type="number" label="30007" default="6" range="4,12,1" />
+        <setting id="show_notifications" type="bool" label="30008" default="true" />
+    </category>
+</settings>
