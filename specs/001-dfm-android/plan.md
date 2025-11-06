@@ -24,7 +24,7 @@ Integrate DanmakuFlameMaster (DFM) to render a smooth danmaku (scrolling comment
 **Target Platform**: Android TV devices (Leanback), minSdk 24, targetSdk 36 (per cmake/platform/android/android.cmake).  
 **Project Type**: mobile + native (Android UI layer + JNI bridge to Kodi core).  
 **Performance Goals**: 60 fps UX; overlay 95th-percentile frame interval ≤ 25ms; post-seek/pause/resume timing error ≤ 150ms; stability: no leaks across 60 min playback.  
-**Constraints**: Android-only feature behind guards; no regressions on other platforms; no online sources in Phase 1; avoid occluding Kodi GUI; mutual exclusion with scrolling ASS.  
+**Constraints**: Android-only feature behind guards; no regressions on other platforms; no online sources in Phase 1; avoid occluding Kodi GUI; mutual exclusion with scrolling ASS. CI emulator/API level pinned to plan’s min/target.  
 **Scale/Scope**: Single feature touching Android packaging and platform layer; no new top-level modules.
 
 ## Constitution Check
@@ -36,7 +36,7 @@ Integrate DanmakuFlameMaster (DFM) to render a smooth danmaku (scrolling comment
 - Quality Gates and Reviews: PASS. PR will run full CI including Android. Feature flag/time-boxed; remove if not shipping.
 - Performance & UX Smoothness: PASS WITH MEASUREMENTS. Commit includes perf checks; target overlay 60 fps and ≤ 25ms 95th-percentile rendering under typical density; fallback to disable overlay if budget exceeded.
 - Internationalization & Accessibility: PASS. All user-visible strings translatable; remote-friendly controls; legibility options (size/opacity/no-overlap).
-- Licensing: PASS (WITH CONDITION). DFM is Apache-2.0; combined work will be distributed under GPLv3+ per GPL-2.0-or-later. Include Apache-2.0 NOTICE/attribution in APK/docs. If maintainers prefer GPLv2-only constraints, fallback is to postpone vendor lib or revisit renderer.
+- Licensing: PASS. Repository is GPL-2.0-or-later. DFM (Apache-2.0) is compatible when the combined Android artifact is distributed under GPLv3+. Include Apache-2.0 NOTICE/attribution (T004) and document distribution terms in release notes/changelog.
 
 ## Project Structure
 
@@ -66,25 +66,22 @@ tools/
 └── android/
     └── packaging/
         └── xbmc/
-            └── build.gradle.in       # Add DFM dependency and proguard/consumer rules
+            ├── build.gradle.in                 # DFM dependency + proguard/consumer rules
+            └── src/overlay/
+                ├── DanmakuOverlayView.java.in  # Hosts DFM view/lifecycle
+                └── DanmakuController.java.in   # Loads sources, applies settings, syncs state
 
 xbmc/
-└── platform/
-    └── android/
-        ├── java/org/xbmc/kodi/overlay/
-        │   ├── DanmakuOverlayView.java     # Hosts DFM view/lifecycle
-        │   └── DanmakuController.java      # Loads sources, applies settings, syncs state
-        ├── jni/
-        │   └── DanmakuBridge.cpp           # JNI bridge between player events and Android layer
-        └── ... (wire into existing Activity/Surface layering)
+└── platform/android/
+    └── activity/
+        ├── JNIDanmakuBridge.cpp               # JNI bridge: player events + layout updates
+        ├── JNIXBMCMainView.cpp                # existing: obtain video rectangle and pass to JNI
+        └── PlatformAndroid.cpp                # feature guard usage for enabling overlay
 
 xbmc/
 └── settings/danmaku/
     ├── DanmakuSettings.h
-    └── DanmakuSettings.cpp                 # Settings nodes: enable, density, speed, size, opacity, no-overlap
-
-docs/
-└── ... (user docs/wiki updates as required)
+    └── DanmakuSettings.cpp                   # enable, density, speed, size, opacity, no_overlap, max_visible
 ```
 
 **Structure Decision**: Mobile + native Android integration within existing Kodi tree. No new projects; augment Android packaging (Gradle) and platform layer (Java/JNI) with settings under `xbmc/settings`.

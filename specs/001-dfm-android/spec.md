@@ -78,10 +78,10 @@ As a user, when a same-name danmaku file is absent, the system communicates that
 ### Functional Requirements
 
 - FR-001: System MUST allow enabling/disabling a danmaku overlay during video playback on Android.
-- FR-002: System MUST automatically discover and load a same-basename local danmaku file when present (e.g., movie.mp4 → movie.xml or supported formats).
+- FR-002: System MUST automatically discover and load a same-basename local danmaku file when present (e.g., movie.mp4 → movie.xml or supported formats) (per FR-011 Phase 1 scope).
 - FR-003: System MUST keep danmaku timing synchronized with playback position across play, pause, resume, seek, and speed changes.
 - FR-004: System MUST align danmaku overlay to the active video display rectangle and update alignment when the rectangle changes.
-- FR-005: System MUST provide configurable parameters: density, scroll speed, font size, opacity, and optional no-overlap behavior.
+- FR-005: System MUST provide configurable parameters: density, scroll speed, font size, opacity, and optional no-overlap behavior (setting key: no_overlap; minimum vertical spacing unit: line-height; default: 1.0).
 - FR-006: System MUST ensure the overlay does not occlude Kodi GUI controls; GUI remains fully visible and interactive.
 - FR-007: System MUST prevent duplicated scrolling overlays; if danmaku overlay is ON, conflicting scrolling subtitle modes MUST be OFF for the session.
 - FR-008: System MUST handle lifecycle cleanly: allocate on start, pause/resume with app state, release on stop/destroy without leaks.
@@ -115,7 +115,7 @@ As a user, when a same-name danmaku file is absent, the system communicates that
 
 ### Measurable Outcomes
 
-- SC-001: Smoothness: During 10-minute playback on a reference Android TV device, scroll stutter events ≤ 1 per minute, and 95th-percentile frame interval for overlay rendering ≤ 25ms under "typical" density.
+- SC-001: Smoothness: During 10-minute playback on a reference Android TV device, scroll stutter events ≤ 1 per minute, and 95th-percentile frame interval for overlay rendering ≤ 25ms under "typical" density defined as ≤30 visible comments per screen at 1080p.
 - SC-002: Sync: After seek/pause/resume, absolute timing error between danmaku and playback position ≤ 150ms within 1s of the operation.
 - SC-003: Layering: Kodi GUI elements remain visible and interactive with danmaku ON in 100% of tested screens.
 - SC-004: Stability: 0 crashes and no memory leaks attributable to the overlay across 60 minutes of continuous playback (validated via instrumentation).
