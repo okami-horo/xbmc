@@ -1,0 +1,40 @@
+openapi: 3.0.3
+info:
+  title: Kodi Android Danmaku Controls
+  version: 0.1.0
+paths:
+  /danmaku/toggle:
+    post:
+      summary: Enable or disable danmaku overlay for current session
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                enabled:
+                  type: boolean
+              required: [enabled]
+      responses:
+        '200':
+          description: Updated
+  /danmaku/settings:
+    put:
+      summary: Update danmaku runtime settings
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                density: { type: number, minimum: 0, maximum: 1 }
+                speed: { type: number }
+                font_size_sp: { type: number }
+                opacity: { type: number, minimum: 0, maximum: 1 }
+                no_overlap: { type: boolean }
+                max_visible: { type: integer, minimum: 1 }
+      responses:
+        '200':
+          description: Updated
