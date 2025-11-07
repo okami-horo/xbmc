@@ -7,10 +7,10 @@
 
 **Purpose**: Android packaging setup, dependency, and scaffolding
 
-- [ ] T001 Add DFM dependency in tools/android/packaging/xbmc/build.gradle.in (implementation 'com.github.ctiao:DanmakuFlameMaster:0.9.25')
-- [ ] T002 Create package directories for overlay Java in tools/android/packaging/xbmc/src/overlay/
-- [ ] T003 [P] Add proguard/consumer rules for DFM in tools/android/packaging/xbmc/proguard-rules.pro and reference from build.gradle.in
-- [ ] T004 [P] Add third-party NOTICE for DFM in docs/third-party/dfm.md and include in Android packaging (tools/android/packaging/xbmc)
+- [X] T001 Add DFM dependency in tools/android/packaging/xbmc/build.gradle.in (implementation 'com.github.ctiao:DanmakuFlameMaster:0.9.25')
+- [X] T002 Create package directories for overlay Java in tools/android/packaging/xbmc/src/overlay/
+- [X] T003 [P] Add proguard/consumer rules for DFM in tools/android/packaging/xbmc/proguard-rules.pro and reference from build.gradle.in
+- [X] T004 [P] Add third-party NOTICE for DFM in docs/third-party/dfm.md and include in Android packaging (tools/android/packaging/xbmc)
 
 ---
 
@@ -18,13 +18,13 @@
 
 **Purpose**: Core wiring and feature flags required before story work
 
-- [ ] T005 Create settings module files xbmc/settings/danmaku/DanmakuSettings.h and xbmc/settings/danmaku/DanmakuSettings.cpp (enable, density, speed, font size, opacity, no_overlap, max_visible)
-- [ ] T006 [P] Register danmaku settings in xbmc/settings/danmaku/DanmakuSettings.cpp and ensure defaults per spec
-- [ ] T007 [P] Add feature guard usage in Android platform entry points xbmc/platform/android/PlatformAndroid.cpp to check settings before enabling overlay
-- [ ] T008 Create JNI bridge file xbmc/platform/android/activity/JNIDanmakuBridge.cpp exposing onPlay/onPause/onSeek/onSpeedChanged and layout update hooks to Java
-- [ ] T009 [P] Add Android packaging to load overlay classes at startup in xbmc/platform/android/activity/JNIMainActivity.cpp (invoke JNIDanmakuBridge attach/detach)
-- [ ] T010 Implement JSON-RPC operations for danmaku in xbmc/interfaces/json-rpc/DanmakuOperations.h and xbmc/interfaces/json-rpc/DanmakuOperations.cpp (methods: Danmaku.Toggle, Danmaku.SetSettings)
-- [ ] T011 [P] Register new JSON-RPC methods in xbmc/interfaces/json-rpc/JSONServiceDescription.cpp and add schemas under xbmc/interfaces/json-rpc/schema/danmaku.json
+- [X] T005 Create settings module files xbmc/settings/danmaku/DanmakuSettings.h and xbmc/settings/danmaku/DanmakuSettings.cpp (enable, density, speed, font size, opacity, no_overlap, max_visible)
+- [X] T006 [P] Register danmaku settings in xbmc/settings/danmaku/DanmakuSettings.cpp and ensure defaults per spec
+- [X] T007 [P] Add feature guard usage in Android platform entry points xbmc/platform/android/PlatformAndroid.cpp to check settings before enabling overlay
+- [X] T008 Create JNI bridge file xbmc/platform/android/activity/JNIDanmakuBridge.cpp exposing onPlay/onPause/onSeek/onSpeedChanged and layout update hooks to Java
+- [X] T009 [P] Add Android packaging to load overlay classes at startup in xbmc/platform/android/activity/JNIMainActivity.cpp (invoke JNIDanmakuBridge attach/detach)
+- [X] T010 Implement JSON-RPC operations for danmaku in xbmc/interfaces/json-rpc/DanmakuOperations.h and xbmc/interfaces/json-rpc/DanmakuOperations.cpp (methods: Danmaku.Toggle, Danmaku.SetSettings)
+- [X] T011 [P] Register new JSON-RPC methods in xbmc/interfaces/json-rpc/JSONServiceDescription.cpp and add schemas under xbmc/interfaces/json-rpc/schema/danmaku.json
 
 ---
 

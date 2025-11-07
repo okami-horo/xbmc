@@ -1,0 +1,25 @@
+{
+  "methods": {
+    "Danmaku.Toggle": {
+      "type": "method",
+      "description": "Enable or disable danmaku overlay for current session",
+      "params": {
+        "enabled": { "type": "boolean", "required": true }
+      },
+      "returns": { "type": "object" }
+    },
+    "Danmaku.SetSettings": {
+      "type": "method",
+      "description": "Update danmaku runtime settings",
+      "params": {
+        "density": { "type": "number", "minimum": 0, "maximum": 1 },
+        "speed": { "type": "number" },
+        "font_size_sp": { "type": "number" },
+        "opacity": { "type": "number", "minimum": 0, "maximum": 1 },
+        "no_overlap": { "type": "boolean" },
+        "max_visible": { "type": "integer", "minimum": 1 }
+      },
+      "returns": { "type": "object" }
+    }
+  }
+}

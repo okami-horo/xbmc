@@ -7,6 +7,7 @@
  */
 
 #include "JNIMainActivity.h"
+#include "JNIDanmakuBridge.h"
 
 #include "CompileInfo.h"
 
@@ -22,11 +23,13 @@ CJNIMainActivity::CJNIMainActivity(const ANativeActivity *nativeActivity)
   : CJNIActivity(nativeActivity)
 {
   m_appInstance = this;
+  CJNIDanmakuBridge::Attach();
 }
 
 CJNIMainActivity::~CJNIMainActivity()
 {
   m_appInstance = NULL;
+  CJNIDanmakuBridge::Detach();
 }
 
 void CJNIMainActivity::RegisterNatives(JNIEnv* env)

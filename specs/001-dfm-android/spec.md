@@ -91,6 +91,22 @@ As a user, when a same-name danmaku file is absent, the system communicates that
 - FR-012: System MUST default danmaku to ON when a same-basename local file is detected at playback start; otherwise the overlay remains OFF until the user enables it.
 - FR-013: System MUST expose a user-configurable maximum visible danmaku count per screen; by default no cap is applied until the user sets one.
 
+### Acceptance Criteria per FR (testable)
+
+- FR-001: User can enable/disable overlay via Settings and JSON-RPC `Danmaku.Toggle`. Toggling takes effect within 1s during playback; state persists for the current session.
+- FR-002: Given `movie.mp4` and `movie.xml` (Bilibili XML), overlay autoloads `movie.xml` at playback start with ≥95% success (see SC-005). Only `.xml` is accepted in Phase 1; unsupported or unreadable files do not crash and leave overlay OFF.
+- FR-003: After pause/resume/seek/speed change, danmaku timing error ≤150ms within 1s of operation (SC-002), verified by instrumentation or visual test harness.
+- FR-004: Overlay bounds match active video rectangle; when rectangle changes, overlay updates within 200ms. Visual check: overlay top-left within 2px of video region in all tested resolutions/aspect ratios.
+- FR-005: Settings (`density`, `speed`, `font size`, `opacity`, `no_overlap`) modify overlay behavior within 1s (or next playback if documented). Inputs are range-clamped; invalid values are rejected without crash.
+- FR-006: With overlay ON, Kodi GUI remains fully visible/interactive on all tested screens; overlay applies margins or z-order so controls are unobscured (SC-003).
+- FR-007: Enabling danmaku disables conflicting scrolling ASS for the session; both cannot be active simultaneously.
+- FR-008: Create/attach on playback start, pause/resume with app state, release on stop/destroy. Stability: 0 crashes and no leaks attributable to overlay over 60 minutes (SC-004).
+- FR-009: When no danmaku is available or load fails, overlay remains OFF, logs a non-intrusive state, and playback continues normally.
+- FR-010: Under “typical” density (≤30 visible per screen @1080p), 95th-percentile overlay frame interval ≤25ms; scroll stutter ≤1/min (SC-001).
+- FR-011: No online/network fetching occurs in Phase 1; attempts are ignored or clearly reported as unsupported in logs.
+- FR-012: If a same-basename `.xml` exists at playback start, overlay defaults to ON; otherwise remains OFF until the user enables it.
+- FR-013: If `max_visible` is set to N, measured visible danmaku per screen ≤ N for ≥95% of frames under typical conditions.
+
 ### Key Entities (if data involved)
 
 - DanmakuItem: display text/content, start time, type (scrolling/top/bottom), duration, style (color, size, stroke), priority.

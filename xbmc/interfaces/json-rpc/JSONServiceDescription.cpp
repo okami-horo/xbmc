@@ -22,6 +22,7 @@
 #include "ProfilesOperations.h"
 #include "ServiceDescription.h"
 #include "SettingsOperations.h"
+#include "DanmakuOperations.h"
 #include "SystemOperations.h"
 #include "TextureOperations.h"
 #include "VideoLibrary.h"
@@ -253,6 +254,10 @@ JsonRpcMethodMap CJSONServiceDescription::m_methodMaps[] = {
   { "Settings.GetSkinSettings",                     CSettingsOperations::GetSkinSettings },
   { "Settings.GetSkinSettingValue",                 CSettingsOperations::GetSkinSettingValue },
   { "Settings.SetSkinSettingValue",                 CSettingsOperations::SetSkinSettingValue },
+
+// Danmaku operations
+  { "Danmaku.Toggle",                                CDanmakuOperations::Toggle },
+  { "Danmaku.SetSettings",                           CDanmakuOperations::SetSettings },
 
 // XBMC operations
   { "XBMC.GetInfoLabels",                           CXBMCOperations::GetInfoLabels },

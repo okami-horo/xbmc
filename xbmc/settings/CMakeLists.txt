@@ -19,7 +19,8 @@ set(SOURCES AdvancedSettings.cpp
             SettingUtils.cpp
             SkinSettings.cpp
             SettingsComponent.cpp
-            SubtitlesSettings.cpp)
+            SubtitlesSettings.cpp
+            danmaku/DanmakuSettings.cpp)
 
 set(HEADERS AdvancedSettings.h
             DiscSettings.h
@@ -45,7 +46,8 @@ set(HEADERS AdvancedSettings.h
             SettingUtils.h
             SkinSettings.h
             SettingsComponent.h
-            SubtitlesSettings.h)
+            SubtitlesSettings.h
+            danmaku/DanmakuSettings.h)
 
 if(TARGET ${APP_NAME_LC}::Bluray)
   list(APPEND SOURCES DiscSettings.cpp)

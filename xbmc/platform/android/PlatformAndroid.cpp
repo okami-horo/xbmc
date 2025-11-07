@@ -11,6 +11,7 @@
 #include "ServiceBroker.h"
 #include "filesystem/SpecialProtocol.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/danmaku/DanmakuSettings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/log.h"
 #include "windowing/android/WinSystemAndroidGLESContext.h"
@@ -54,6 +55,11 @@ bool CPlatformAndroid::InitStageThree()
   {
     CLog::Log(LOGINFO, "XBMCApp: VideoLayout view was set to transparent.");
     CXBMCApp::Get().SetVideoLayoutBackgroundColor(0);
+  }
+
+  if (CDanmakuSettings::GetInstance().GetEnabled())
+  {
+    CLog::Log(LOGINFO, "Danmaku: feature enabled (Android)");
   }
 
   return true;

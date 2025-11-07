@@ -4,6 +4,7 @@ set(SOURCES android_main.cpp
             AndroidMouse.cpp
             AndroidTouch.cpp
             EventLoop.cpp
+            JNIDanmakuBridge.cpp
             JNIMainActivity.cpp
             JNIXBMCMainView.cpp
             JNIXBMCMediaSession.cpp
@@ -28,6 +29,7 @@ set(HEADERS AndroidJoyStick.h
             AndroidMouse.h
             AndroidTouch.h
             EventLoop.h
+            JNIDanmakuBridge.h
             IActivityHandler.h
             JNIMainActivity.h
             JNIXBMCMainView.h
