@@ -46,6 +46,7 @@
 #include "settings/SettingsComponent.h"
 #include "settings/SkinSettings.h"
 #include "settings/SubtitlesSettings.h"
+#include "settings/danmaku/DanmakuSettings.h"
 #include "settings/lib/SettingsManager.h"
 #include "utils/CharsetConverter.h"
 #include "utils/RssManager.h"
@@ -545,6 +546,7 @@ void CSettings::InitializeISubSettings()
   RegisterSubSettings(&CSkinSettings::GetInstance());
   RegisterSubSettings(&g_sysinfo);
   RegisterSubSettings(&CViewStateSettings::GetInstance());
+  RegisterSubSettings(&CDanmakuSettings::GetInstance());
 }
 
 void CSettings::UninitializeISubSettings()
@@ -555,6 +557,7 @@ void CSettings::UninitializeISubSettings()
   UnregisterSubSettings(&CSkinSettings::GetInstance());
   UnregisterSubSettings(&g_sysinfo);
   UnregisterSubSettings(&CViewStateSettings::GetInstance());
+  UnregisterSubSettings(&CDanmakuSettings::GetInstance());
 }
 
 void CSettings::InitializeISettingCallbacks()

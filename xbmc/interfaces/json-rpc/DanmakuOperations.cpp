@@ -1,6 +1,7 @@
 #include "DanmakuOperations.h"
 
 #include "ServiceBroker.h"
+#include "settings/SettingsComponent.h"
 #include "settings/danmaku/DanmakuSettings.h"
 #include "utils/Variant.h"
 #if defined(TARGET_ANDROID)
@@ -35,6 +36,8 @@ JSONRPC_STATUS CDanmakuOperations::Toggle(const std::string& method,
 #endif
   result.clear();
   result["enabled"] = enabled;
+  if (auto settings = CServiceBroker::GetSettingsComponent()->GetSettings())
+    settings->Save();
   return OK;
 }
 
@@ -77,5 +80,7 @@ JSONRPC_STATUS CDanmakuOperations::SetSettings(const std::string& method,
 #endif
   result.clear();
   result["ack"] = true;
+  if (auto settings = CServiceBroker::GetSettingsComponent()->GetSettings())
+    settings->Save();
   return OK;
 }

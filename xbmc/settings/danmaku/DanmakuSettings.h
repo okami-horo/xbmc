@@ -1,8 +1,9 @@
 #pragma once
 
+#include "settings/ISubSettings.h"
 #include <optional>
 
-class CDanmakuSettings
+class CDanmakuSettings : public ISubSettings
 {
 public:
   static CDanmakuSettings& GetInstance();
@@ -27,6 +28,11 @@ public:
 
   std::optional<int> GetMaxVisible() const { return m_maxVisible; }
   void SetMaxVisible(std::optional<int> v);
+
+  // ISubSettings
+  bool Load(const TiXmlNode* settings) override;
+  bool Save(TiXmlNode* settings) const override;
+  void Clear() override;
 
 private:
   CDanmakuSettings() = default;

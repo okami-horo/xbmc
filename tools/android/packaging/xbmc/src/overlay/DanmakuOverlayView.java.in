@@ -10,6 +10,7 @@ import master.flame.danmaku.ui.widget.DanmakuView;
 
 public class DanmakuOverlayView extends FrameLayout {
   private final DanmakuView danmakuView;
+  private int safeLeft, safeTop, safeRight, safeBottom;
 
   public DanmakuOverlayView(Context context) {
     this(context, null);
@@ -23,6 +24,8 @@ public class DanmakuOverlayView extends FrameLayout {
     setClipToPadding(false);
     setClipChildren(false);
     setFocusable(false);
+    int topBottom = dpToPx(24);
+    setSafeMargins(0, topBottom, 0, topBottom);
   }
 
   public DanmakuView getDanmakuView() {
@@ -41,5 +44,23 @@ public class DanmakuOverlayView extends FrameLayout {
       lp.height = h;
     }
     setLayoutParams(lp);
+    applySafePadding();
+  }
+
+  public void setSafeMargins(int left, int top, int right, int bottom) {
+    this.safeLeft = Math.max(0, left);
+    this.safeTop = Math.max(0, top);
+    this.safeRight = Math.max(0, right);
+    this.safeBottom = Math.max(0, bottom);
+    applySafePadding();
+  }
+
+  private void applySafePadding() {
+    setPadding(safeLeft, safeTop, safeRight, safeBottom);
+  }
+
+  private int dpToPx(int dp) {
+    float density = getResources().getDisplayMetrics().density;
+    return Math.round(dp * density);
   }
 }

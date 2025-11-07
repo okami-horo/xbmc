@@ -115,6 +115,17 @@ void CApplicationPlayerCallback::OnPlayBackStarted(const CFileItem& file)
   if (CDanmakuSettings::GetInstance().GetEnabled())
   {
     CJNIDanmakuBridge::Attach();
+    {
+      auto& s = CDanmakuSettings::GetInstance();
+      CJNIDanmakuBridge::ApplySettings(
+          s.GetEnabled(),
+          s.GetDensity(),
+          s.GetSpeed(),
+          s.GetFontSizeSp(),
+          s.GetOpacity(),
+          s.GetNoOverlap(),
+          s.GetMaxVisible().has_value() ? *s.GetMaxVisible() : -1);
+    }
     CJNIDanmakuBridge::OnPlayWithPath(file.GetPath());
     auto& components2 = CServiceBroker::GetAppComponents();
     const auto appPlayer2 = components2.GetComponent<CApplicationPlayer>();

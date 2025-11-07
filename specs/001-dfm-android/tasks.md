@@ -59,14 +59,14 @@
 
 ### Implementation for User Story 2
 
-- [ ] T021 [P] [US2] Add getters/setters and range clamping in xbmc/settings/danmaku/DanmakuSettings.cpp
-- [ ] T022 [P] [US2] Bridge settings to Java: add JNI applySettings(enabled, density, speed, size, opacity, no_overlap, max_visible) in xbmc/platform/android/activity/JNIDanmakuBridge.cpp
-- [ ] T023 [US2] Apply settings live in tools/android/packaging/xbmc/src/overlay/DanmakuController.java.in
-- [ ] T024 [US2] Expose JSON-RPC method Danmaku.SetSettings in xbmc/interfaces/json-rpc/DanmakuOperations.cpp (maps to contracts/openapi.yaml)
-- [ ] T025 [US2] Expose JSON-RPC method Danmaku.Toggle in xbmc/interfaces/json-rpc/DanmakuOperations.cpp (maps to contracts/openapi.yaml)
-- [ ] T026 [US2] Persist user preference defaults using existing settings framework in xbmc/settings/danmaku/DanmakuSettings.cpp
-- [ ] T027 [US2] Ensure GUI visibility: keep Kodi GUI unobscured by adjusting overlay margins in tools/android/packaging/xbmc/src/overlay/DanmakuOverlayView.java.in
-- [ ] T028 [US2] Implement optional max_visible cap handling in tools/android/packaging/xbmc/src/overlay/DanmakuController.java.in
+- [X] T021 [P] [US2] Add getters/setters and range clamping in xbmc/settings/danmaku/DanmakuSettings.cpp
+- [X] T022 [P] [US2] Bridge settings to Java: add JNI applySettings(enabled, density, speed, size, opacity, no_overlap, max_visible) in xbmc/platform/android/activity/JNIDanmakuBridge.cpp
+- [X] T023 [US2] Apply settings live in tools/android/packaging/xbmc/src/overlay/DanmakuController.java.in
+- [X] T024 [US2] Expose JSON-RPC method Danmaku.SetSettings in xbmc/interfaces/json-rpc/DanmakuOperations.cpp (maps to contracts/openapi.yaml)
+- [X] T025 [US2] Expose JSON-RPC method Danmaku.Toggle in xbmc/interfaces/json-rpc/DanmakuOperations.cpp (maps to contracts/openapi.yaml)
+- [X] T026 [US2] Persist user preference defaults using existing settings framework in xbmc/settings/danmaku/DanmakuSettings.cpp
+- [X] T027 [US2] Ensure GUI visibility: keep Kodi GUI unobscured by adjusting overlay margins in tools/android/packaging/xbmc/src/overlay/DanmakuOverlayView.java.in
+- [X] T028 [US2] Implement optional max_visible cap handling in tools/android/packaging/xbmc/src/overlay/DanmakuController.java.in
 
 **Checkpoint**: User Stories 1 and 2 independently functional
 
