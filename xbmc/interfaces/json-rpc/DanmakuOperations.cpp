@@ -84,3 +84,20 @@ JSONRPC_STATUS CDanmakuOperations::SetSettings(const std::string& method,
     settings->Save();
   return OK;
 }
+
+JSONRPC_STATUS CDanmakuOperations::Status(const std::string& /*method*/,
+                                          ITransportLayer* /*transport*/,
+                                          IClient* /*client*/,
+                                          const CVariant& /*parameterObject*/,
+                                          CVariant& result)
+{
+  result.clear();
+  auto& s = CDanmakuSettings::GetInstance();
+  result["enabled"] = s.GetEnabled();
+  bool discovery = false;
+#if defined(TARGET_ANDROID)
+  discovery = CJNIDanmakuBridge::IsDiscoveryAvailable();
+#endif
+  result["discovery_available"] = discovery;
+  return OK;
+}

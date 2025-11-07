@@ -80,11 +80,11 @@
 
 ### Implementation for User Story 3
 
-- [ ] T029 [P] [US3] Add discovery status reporting to JSON-RPC in xbmc/interfaces/json-rpc/DanmakuOperations.cpp (e.g., Danmaku.Status)
-- [ ] T030 [US3] On playback start without local file, ensure overlay remains disabled and state logged in tools/android/packaging/xbmc/src/overlay/DanmakuController.java.in
-- [ ] T031 [US3] Add user-facing non-intrusive indicator via logs/UI hooks in xbmc/platform/android/activity/JNIDanmakuBridge.cpp (no danmaku found)
-- [ ] T032 [US3] Guard paths to avoid exceptions on missing/invalid XML in tools/android/packaging/xbmc/src/overlay/DanmakuController.java.in
-- [ ] T033 [US3] Document deferred online source support and plugin hook points in docs/third-party/dfm.md
+- [X] T029 [P] [US3] Add discovery status reporting to JSON-RPC in xbmc/interfaces/json-rpc/DanmakuOperations.cpp (e.g., Danmaku.Status)
+- [X] T030 [US3] On playback start without local file, ensure overlay remains disabled and state logged in tools/android/packaging/xbmc/src/overlay/DanmakuController.java.in
+- [X] T031 [US3] Add user-facing non-intrusive indicator via logs/UI hooks in xbmc/platform/android/activity/JNIDanmakuBridge.cpp (no danmaku found)
+- [X] T032 [US3] Guard paths to avoid exceptions on missing/invalid XML in tools/android/packaging/xbmc/src/overlay/DanmakuController.java.in
+- [X] T033 [US3] Document deferred online source support and plugin hook points in docs/third-party/dfm.md
 
 **Checkpoint**: All user stories independently functional
 

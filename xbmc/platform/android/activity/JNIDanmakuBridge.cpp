@@ -74,6 +74,10 @@ void CJNIDanmakuBridge::OnPlayWithPath(const std::string& path)
   call_static_method<void>(xbmc_jnienv(),
                            CJNIContext::getClassLoader().loadClass(GetDotClassName(s_dmClassName)),
                            "onPlayWithPath", "(Ljava/lang/String;)V", jhstring(path));
+  // Log discovery availability in a non-intrusive way for user awareness
+  const bool available = IsDiscoveryAvailable();
+  if (!available)
+    CLog::Log(LOGINFO, "DanmakuBridge: No same-basename danmaku found for current media");
 }
 
 void CJNIDanmakuBridge::ApplySettings(bool enabled,
@@ -94,4 +98,12 @@ void CJNIDanmakuBridge::ApplySettings(bool enabled,
                            static_cast<jdouble>(opacity),
                            static_cast<jboolean>(noOverlap),
                            static_cast<jint>(maxVisibleOrNeg1));
+}
+
+bool CJNIDanmakuBridge::IsDiscoveryAvailable()
+{
+  jboolean ret = call_static_method<jboolean>(xbmc_jnienv(),
+                                              CJNIContext::getClassLoader().loadClass(GetDotClassName(s_dmClassName)),
+                                              "isDiscoveryAvailable", "()Z");
+  return ret == JNI_TRUE;
 }

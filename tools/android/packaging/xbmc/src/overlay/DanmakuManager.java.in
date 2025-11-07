@@ -12,6 +12,7 @@ import @APP_PACKAGE@.R;
 public class DanmakuManager {
   private static DanmakuOverlayView sOverlayView;
   private static DanmakuController sController;
+  private static boolean sLastDiscoveryFound = false;
 
   public static synchronized void attach() {
     if (sOverlayView != null) return;
@@ -79,11 +80,16 @@ public class DanmakuManager {
       // ignore
     }
     boolean found = sController.discoverSameBasenameFile(uri);
+    sLastDiscoveryFound = found;
     if (found) {
       sController.onPlay();
     } else {
       android.util.Log.d("DanmakuManager", "No same-basename danmaku file found for: " + path);
     }
+  }
+
+  public static synchronized boolean isDiscoveryAvailable() {
+    return sLastDiscoveryFound;
   }
 
   public static synchronized void applySettings(boolean enabled,

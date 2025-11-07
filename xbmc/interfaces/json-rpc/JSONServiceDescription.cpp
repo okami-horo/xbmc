@@ -258,6 +258,7 @@ JsonRpcMethodMap CJSONServiceDescription::m_methodMaps[] = {
 // Danmaku operations
   { "Danmaku.Toggle",                                CDanmakuOperations::Toggle },
   { "Danmaku.SetSettings",                           CDanmakuOperations::SetSettings },
+  { "Danmaku.Status",                                CDanmakuOperations::Status },
 
 // XBMC operations
   { "XBMC.GetInfoLabels",                           CXBMCOperations::GetInfoLabels },

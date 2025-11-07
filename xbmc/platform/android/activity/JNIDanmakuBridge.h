@@ -17,6 +17,9 @@ public:
 
   static void OnPlayWithPath(const std::string& path);
 
+  // Returns true if a same-basename danmaku source was discovered for the current media
+  static bool IsDiscoveryAvailable();
+
   static void ApplySettings(bool enabled,
                             double density,
                             double speed,

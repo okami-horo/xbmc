@@ -27,6 +27,7 @@ public class DanmakuController {
 
   private boolean attached = false;
   private boolean playing = false;
+  private boolean sourceAvailable = false;
   private double density = 1.0;
   private double speed = 1.0;
   private int fontSizeSp = 24;
@@ -99,7 +100,13 @@ public class DanmakuController {
     this.noOverlap = noOverlap;
     this.maxVisible = maxVisible;
     applySettingsToContext();
-    if (!enabled) {
+    // Only allow overlay if explicitly enabled AND a source is available.
+    if (!enabled || !sourceAvailable) {
+      if (!enabled) {
+        Log.d(TAG, "applySettings: disabled by setting");
+      } else if (!sourceAvailable) {
+        Log.d(TAG, "applySettings: no source available; keeping overlay stopped");
+      }
       stopOverlay();
       return;
     }
@@ -118,13 +125,22 @@ public class DanmakuController {
     String xml = name.substring(0, dot) + ".xml";
     File candidate = new File(f.getParentFile(), xml);
     boolean ok = candidate.exists();
+    this.sourceAvailable = ok;
     Log.d(TAG, "discoverSameBasenameFile: " + ok + " -> " + candidate.getAbsolutePath());
+    if (!ok) {
+      // Ensure overlay is stopped if we discover no source
+      stopOverlay();
+    }
     return ok;
   }
 
   private void startOverlayIfReady() {
     DanmakuView view = overlayView != null ? overlayView.getDanmakuView() : null;
     if (view == null) return;
+    if (!sourceAvailable) {
+      Log.d(TAG, "startOverlayIfReady: no source available; not starting overlay");
+      return;
+    }
     if (!withinFrameBudget()) {
       Log.d(TAG, "startOverlayIfReady: skipped due to frame budget");
       return;
