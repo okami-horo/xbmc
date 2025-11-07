@@ -14,66 +14,122 @@ static std::string s_dmClassName = std::string(CCompileInfo::GetClass()) + "/ove
 void CJNIDanmakuBridge::Attach()
 {
   CLog::Log(LOGDEBUG, "DanmakuBridge: Attach");
-  call_static_method<void>(xbmc_jnienv(),
-                           CJNIContext::getClassLoader().loadClass(GetDotClassName(s_dmClassName)),
-                           "attach", "()V");
+  try
+  {
+    call_static_method<void>(xbmc_jnienv(),
+                             CJNIContext::getClassLoader().loadClass(GetDotClassName(s_dmClassName)),
+                             "attach", "()V");
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "DanmakuBridge: Attach failed");
+  }
 }
 
 void CJNIDanmakuBridge::Detach()
 {
   CLog::Log(LOGDEBUG, "DanmakuBridge: Detach");
-  call_static_method<void>(xbmc_jnienv(),
-                           CJNIContext::getClassLoader().loadClass(GetDotClassName(s_dmClassName)),
-                           "detach", "()V");
+  try
+  {
+    call_static_method<void>(xbmc_jnienv(),
+                             CJNIContext::getClassLoader().loadClass(GetDotClassName(s_dmClassName)),
+                             "detach", "()V");
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "DanmakuBridge: Detach failed");
+  }
 }
 
 void CJNIDanmakuBridge::OnPlay()
 {
   CLog::Log(LOGDEBUG, "DanmakuBridge: OnPlay");
-  call_static_method<void>(xbmc_jnienv(),
-                           CJNIContext::getClassLoader().loadClass(GetDotClassName(s_dmClassName)),
-                           "onPlay", "()V");
+  try
+  {
+    call_static_method<void>(xbmc_jnienv(),
+                             CJNIContext::getClassLoader().loadClass(GetDotClassName(s_dmClassName)),
+                             "onPlay", "()V");
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "DanmakuBridge: OnPlay failed");
+  }
 }
 
 void CJNIDanmakuBridge::OnPause()
 {
   CLog::Log(LOGDEBUG, "DanmakuBridge: OnPause");
-  call_static_method<void>(xbmc_jnienv(),
-                           CJNIContext::getClassLoader().loadClass(GetDotClassName(s_dmClassName)),
-                           "onPause", "()V");
+  try
+  {
+    call_static_method<void>(xbmc_jnienv(),
+                             CJNIContext::getClassLoader().loadClass(GetDotClassName(s_dmClassName)),
+                             "onPause", "()V");
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "DanmakuBridge: OnPause failed");
+  }
 }
 
 void CJNIDanmakuBridge::OnSeek(int64_t positionMs)
 {
   CLog::Log(LOGDEBUG, "DanmakuBridge: OnSeek to {} ms", static_cast<long long>(positionMs));
-  call_static_method<void>(xbmc_jnienv(),
-                           CJNIContext::getClassLoader().loadClass(GetDotClassName(s_dmClassName)),
-                           "onSeek", "(J)V", static_cast<jlong>(positionMs));
+  try
+  {
+    call_static_method<void>(xbmc_jnienv(),
+                             CJNIContext::getClassLoader().loadClass(GetDotClassName(s_dmClassName)),
+                             "onSeek", "(J)V", static_cast<jlong>(positionMs));
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "DanmakuBridge: OnSeek failed");
+  }
 }
 
 void CJNIDanmakuBridge::OnSpeedChanged(double speed)
 {
   CLog::Log(LOGDEBUG, "DanmakuBridge: OnSpeedChanged {}", speed);
-  call_static_method<void>(xbmc_jnienv(),
-                           CJNIContext::getClassLoader().loadClass(GetDotClassName(s_dmClassName)),
-                           "onSpeedChanged", "(D)V", static_cast<jdouble>(speed));
+  try
+  {
+    call_static_method<void>(xbmc_jnienv(),
+                             CJNIContext::getClassLoader().loadClass(GetDotClassName(s_dmClassName)),
+                             "onSpeedChanged", "(D)V", static_cast<jdouble>(speed));
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "DanmakuBridge: OnSpeedChanged failed");
+  }
 }
 
 void CJNIDanmakuBridge::UpdateLayout(int left, int top, int right, int bottom)
 {
   CLog::Log(LOGDEBUG, "DanmakuBridge: UpdateLayout L:{} T:{} R:{} B:{}", left, top, right, bottom);
-  call_static_method<void>(xbmc_jnienv(),
-                           CJNIContext::getClassLoader().loadClass(GetDotClassName(s_dmClassName)),
-                           "updateLayout", "(IIII)V",
-                           static_cast<jint>(left), static_cast<jint>(top), static_cast<jint>(right), static_cast<jint>(bottom));
+  try
+  {
+    call_static_method<void>(xbmc_jnienv(),
+                             CJNIContext::getClassLoader().loadClass(GetDotClassName(s_dmClassName)),
+                             "updateLayout", "(IIII)V",
+                             static_cast<jint>(left), static_cast<jint>(top), static_cast<jint>(right), static_cast<jint>(bottom));
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "DanmakuBridge: UpdateLayout failed");
+  }
 }
 
 void CJNIDanmakuBridge::OnPlayWithPath(const std::string& path)
 {
   CLog::Log(LOGDEBUG, "DanmakuBridge: OnPlayWithPath {}", path);
-  call_static_method<void>(xbmc_jnienv(),
-                           CJNIContext::getClassLoader().loadClass(GetDotClassName(s_dmClassName)),
-                           "onPlayWithPath", "(Ljava/lang/String;)V", jhstring(path));
+  try
+  {
+    call_static_method<void>(xbmc_jnienv(),
+                             CJNIContext::getClassLoader().loadClass(GetDotClassName(s_dmClassName)),
+                             "onPlayWithPath", "(Ljava/lang/String;)V", jhstring(path));
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "DanmakuBridge: OnPlayWithPath failed");
+  }
   // Log discovery availability in a non-intrusive way for user awareness
   const bool available = IsDiscoveryAvailable();
   if (!available)
@@ -88,22 +144,37 @@ void CJNIDanmakuBridge::ApplySettings(bool enabled,
                                       bool noOverlap,
                                       int maxVisibleOrNeg1)
 {
-  call_static_method<void>(xbmc_jnienv(),
-                           CJNIContext::getClassLoader().loadClass(GetDotClassName(s_dmClassName)),
-                           "applySettings", "(ZDDIDZI)V",
-                           static_cast<jboolean>(enabled),
-                           static_cast<jdouble>(density),
-                           static_cast<jdouble>(speed),
-                           static_cast<jint>(fontSizeSp),
-                           static_cast<jdouble>(opacity),
-                           static_cast<jboolean>(noOverlap),
-                           static_cast<jint>(maxVisibleOrNeg1));
+  try
+  {
+    call_static_method<void>(xbmc_jnienv(),
+                             CJNIContext::getClassLoader().loadClass(GetDotClassName(s_dmClassName)),
+                             "applySettings", "(ZDDIDZI)V",
+                             static_cast<jboolean>(enabled),
+                             static_cast<jdouble>(density),
+                             static_cast<jdouble>(speed),
+                             static_cast<jint>(fontSizeSp),
+                             static_cast<jdouble>(opacity),
+                             static_cast<jboolean>(noOverlap),
+                             static_cast<jint>(maxVisibleOrNeg1));
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "DanmakuBridge: ApplySettings failed");
+  }
 }
 
 bool CJNIDanmakuBridge::IsDiscoveryAvailable()
 {
-  jboolean ret = call_static_method<jboolean>(xbmc_jnienv(),
-                                              CJNIContext::getClassLoader().loadClass(GetDotClassName(s_dmClassName)),
-                                              "isDiscoveryAvailable", "()Z");
-  return ret == JNI_TRUE;
+  try
+  {
+    jboolean ret = call_static_method<jboolean>(xbmc_jnienv(),
+                                                CJNIContext::getClassLoader().loadClass(GetDotClassName(s_dmClassName)),
+                                                "isDiscoveryAvailable", "()Z");
+    return ret == JNI_TRUE;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "DanmakuBridge: IsDiscoveryAvailable failed");
+    return false;
+  }
 }

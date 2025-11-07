@@ -20,6 +20,9 @@ env:
   BUILDTHREADS: 4
   NDK_VERSION: "28.2.13676358"
   NDK_API: "24"
+  # Danmaku feature: pin emulator API levels per plan (minSdk/targetSdk)
+  EMULATOR_API_MIN: "24"
+  EMULATOR_API_TARGET: "36"
   Configuration: "RelWithDebInfo"
   TARBALLS: "/opt/xbmc-tarballs"
 

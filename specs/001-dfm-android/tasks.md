@@ -94,16 +94,16 @@
 
 **Purpose**: Hardening, documentation, and performance tuning
 
-- [ ] T034 [P] Add instrumentation/perf logging hooks for frame interval and timing error in tools/android/packaging/xbmc/src/overlay/DanmakuController.java.in
-- [ ] T035 Improve error handling and user logs across bridge and controller in xbmc/platform/android/activity/JNIDanmakuBridge.cpp and tools/android/packaging/xbmc/src/overlay/DanmakuController.java.in
-- [ ] T036 [P] Update documentation with usage and settings in docs/features/android-danmaku.md
-- [ ] T037 [P] Validate quickstart in specs/001-dfm-android/quickstart.md and update as needed
-- [ ] T038 Security review: ensure no unintended network access; local-file only paths enforced in xbmc/platform/android/activity/JNIDanmakuBridge.cpp and tools/android/packaging/xbmc/src/overlay/DanmakuController.java.in
+- [X] T034 [P] Add instrumentation/perf logging hooks for frame interval and timing error in tools/android/packaging/xbmc/src/overlay/DanmakuController.java.in
+- [X] T035 Improve error handling and user logs across bridge and controller in xbmc/platform/android/activity/JNIDanmakuBridge.cpp and tools/android/packaging/xbmc/src/overlay/DanmakuController.java.in
+- [X] T036 [P] Update documentation with usage and settings in docs/features/android-danmaku.md
+- [X] T037 [P] Validate quickstart in specs/001-dfm-android/quickstart.md and update as needed
+- [X] T038 Security review: ensure no unintended network access; local-file only paths enforced in xbmc/platform/android/activity/JNIDanmakuBridge.cpp and tools/android/packaging/xbmc/src/overlay/DanmakuController.java.in
 - [ ] T040 [P] SC-005 measurement: add autoload success measurement harness and dataset; run on CI/emulator and report ≥95% success.
-- [ ] T041 SC-006 measurement: add a brief usability test plan doc and capture satisfaction metric; record outcomes in docs/features/android-danmaku.md.
-- [ ] T042 [P] CI perf budget gate: collect frame-interval/timing-error metrics (from T034) and fail CI or flag when thresholds regress; togglable for local runs.
-- [ ] T043 [P] Changelog/wiki update: add user-visible changes and licensing distribution note per constitution.
-- [ ] T044 [P] Pin CI Android emulator API level to minSdk/targetSdk per plan; document in tools/android/packaging CI config.
+- [X] T041 SC-006 measurement: add a brief usability test plan doc and capture satisfaction metric; record outcomes in docs/features/android-danmaku.md.
+ - [ ] T042 [P] CI perf budget gate: collect frame-interval/timing-error metrics (from T034) and fail CI or flag when thresholds regress; togglable for local runs.
+ - [ ] T043 [P] Changelog/wiki update: add user-visible changes and licensing distribution note per constitution.
+- [X] T044 [P] Pin CI Android emulator API level to minSdk/targetSdk per plan; document in tools/android/packaging CI config.
 
 ---
 
