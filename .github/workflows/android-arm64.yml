@@ -189,12 +189,20 @@ jobs:
       - name: Upload Build Info
         uses: actions/upload-artifact@v4
         with:
-          name: build-info
+          name: "build-info"
           path: |
             build/CMakeCache.txt
             build/compile_commands.json
           retention-days: 7
         continue-on-error: true
+      
+      - name: "SC-005: Autoload Success Measurement (report-only)"
+        run: |
+          AUTOLOAD_GATE=0 python3 tools/android/packaging/ci/measure_autoload.py
+      
+      - name: "Perf Budget Gate (report-only)"
+        run: |
+          PERF_GATE=0 python3 tools/android/packaging/ci/perf_gate.py
 
   release:
     name: Create GitHub Release

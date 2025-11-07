@@ -1,0 +1,10 @@
+perf.tick_ms=12.341, density=0.8, speed=1.0
+perf.tick_ms=14.002, density=0.8, speed=1.0
+perf.tick_ms=16.667, density=0.8, speed=1.0
+perf.tick_ms=15.789, density=0.8, speed=1.0
+perf.tick_ms=13.420, density=0.8, speed=1.0
+perf.tick_ms=18.250, density=0.8, speed=1.0
+perf.tick_ms=17.100, density=0.8, speed=1.0
+perf.tick_ms=16.200, density=0.8, speed=1.0
+perf.tick_ms=19.990, density=0.8, speed=1.0
+perf.tick_ms=20.100, density=0.8, speed=1.0

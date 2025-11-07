@@ -89,3 +89,11 @@ Example payloads:
 
 - Mutual exclusion is enforced with scrolling ASS to avoid conflicts.
 - Future online sources are explicitly out of scope for this phase.
+
+## Changelog / Distribution Notes
+
+- Adds Android danmaku overlay via DanmakuFlameMaster (DFM) 0.9.25.
+- Default behavior: auto-enable overlay when a same-basename XML file is detected at playback start.
+- JSON-RPC operations: Danmaku.Toggle and Danmaku.SetSettings.
+- Performance: basic guardrails and optional perf tick logging to support CI monitoring.
+- Licensing: Repository is GPL-2.0-or-later. Android APKs that include DFM must be distributed under GPLv3+ terms to satisfy license compatibility. See third-party attribution: docs/third-party/dfm.md.
