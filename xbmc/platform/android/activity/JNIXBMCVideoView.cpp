@@ -7,6 +7,7 @@
  */
 
 #include "JNIXBMCVideoView.h"
+#include "JNIDanmakuBridge.h"
 
 #include "CompileInfo.h"
 #include "utils/StringUtils.h"
@@ -147,6 +148,7 @@ void CJNIXBMCVideoView::setSurfaceRect(const CRect& rect)
   call_method<void>(m_object,
                     "setSurfaceRect", "(IIII)V", int(rect.x1), int(rect.y1), int(rect.x2), int(rect.y2));
   m_surfaceRect = rect;
+  CJNIDanmakuBridge::UpdateLayout(int(rect.x1), int(rect.y1), int(rect.x2), int(rect.y2));
 }
 
 bool CJNIXBMCVideoView::isCreated() const

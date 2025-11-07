@@ -36,16 +36,16 @@
 
 ### Implementation for User Story 1
 
-- [ ] T012 [P] [US1] Create overlay view class in tools/android/packaging/xbmc/src/overlay/DanmakuOverlayView.java.in (hosts DFM view)
-- [ ] T013 [P] [US1] Create controller class in tools/android/packaging/xbmc/src/overlay/DanmakuController.java.in (load source, apply settings, lifecycle)
-- [ ] T014 [US1] Implement JNI calls in xbmc/platform/android/activity/JNIDanmakuBridge.cpp to forward player events to DanmakuController (onPlay/onPause/onSeek/onSpeedChanged)
-- [ ] T015 [US1] Update xbmc/platform/android/activity/JNIXBMCMainView.cpp to obtain active video rectangle and pass to overlay via JNI
-- [ ] T016 [US1] Implement same-basename local file discovery in tools/android/packaging/xbmc/src/overlay/DanmakuController.java.in (e.g., movie.mp4 → movie.xml)
-- [ ] T017 [US1] Ensure mutual exclusion with scrolling ASS: disable conflicting scrolling subtitle mode when overlay enabled in xbmc/cores/VideoPlayer/Process/android/ProcessInfoAndroid.cpp
-- [ ] T018 [US1] Ensure clean lifecycle: attach overlay on playback start, pause/resume appropriately, and release on stop in xbmc/platform/android/activity/JNIDanmakuBridge.cpp
-- [ ] T019 [US1] Validate 60fps budget paths in tools/android/packaging/xbmc/src/overlay/DanmakuController.java.in (density caps hook; early-return if frame budget exceeded)
-- [ ] T020 [US1] Log and surface non-intrusive state when overlay unavailable (no same-name file) in tools/android/packaging/xbmc/src/overlay/DanmakuController.java.in
-- [ ] T039 [US1] Implement default enablement when a same-basename file is detected at playback start in tools/android/packaging/xbmc/src/overlay/DanmakuController.java.in and verify via acceptance test (FR-012).
+- [X] T012 [P] [US1] Create overlay view class in tools/android/packaging/xbmc/src/overlay/DanmakuOverlayView.java.in (hosts DFM view)
+- [X] T013 [P] [US1] Create controller class in tools/android/packaging/xbmc/src/overlay/DanmakuController.java.in (load source, apply settings, lifecycle)
+- [X] T014 [US1] Implement JNI calls in xbmc/platform/android/activity/JNIDanmakuBridge.cpp to forward player events to DanmakuController (onPlay/onPause/onSeek/onSpeedChanged)
+- [X] T015 [US1] Update xbmc/platform/android/activity/JNIXBMCMainView.cpp to obtain active video rectangle and pass to overlay via JNI
+- [X] T016 [US1] Implement same-basename local file discovery in tools/android/packaging/xbmc/src/overlay/DanmakuController.java.in (e.g., movie.mp4 → movie.xml)
+- [X] T017 [US1] Ensure mutual exclusion with scrolling ASS: disable conflicting scrolling subtitle mode when overlay enabled in xbmc/cores/VideoPlayer/Process/android/ProcessInfoAndroid.cpp
+- [X] T018 [US1] Ensure clean lifecycle: attach overlay on playback start, pause/resume appropriately, and release on stop in xbmc/platform/android/activity/JNIDanmakuBridge.cpp
+- [X] T019 [US1] Validate 60fps budget paths in tools/android/packaging/xbmc/src/overlay/DanmakuController.java.in (density caps hook; early-return if frame budget exceeded)
+- [X] T020 [US1] Log and surface non-intrusive state when overlay unavailable (no same-name file) in tools/android/packaging/xbmc/src/overlay/DanmakuController.java.in
+- [X] T039 [US1] Implement default enablement when a same-basename file is detected at playback start in tools/android/packaging/xbmc/src/overlay/DanmakuController.java.in and verify via acceptance test (FR-012).
 
 **Checkpoint**: User Story 1 independently functional and testable on Android TV
 

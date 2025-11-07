@@ -1,0 +1,101 @@
+package @APP_PACKAGE@.overlay;
+
+import android.graphics.Rect;
+import android.view.ViewGroup;
+import android.widget.RelativeLayout;
+import android.net.Uri;
+import java.io.File;
+
+import @APP_PACKAGE@.Main;
+import @APP_PACKAGE@.R;
+
+public class DanmakuManager {
+  private static DanmakuOverlayView sOverlayView;
+  private static DanmakuController sController;
+
+  public static synchronized void attach() {
+    if (sOverlayView != null) return;
+    if (Main.MainActivity == null) return;
+    RelativeLayout videoLayout = Main.MainActivity.findViewById(R.id.VideoLayout);
+    if (videoLayout == null) return;
+
+    sOverlayView = new DanmakuOverlayView(Main.MainActivity);
+    sOverlayView.setElevation(0.5f);
+    RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(
+        ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+    videoLayout.addView(sOverlayView, lp);
+
+    sController = new DanmakuController(Main.MainActivity, sOverlayView);
+    sController.attach();
+  }
+
+  public static synchronized void detach() {
+    if (Main.MainActivity == null) return;
+    if (sController != null) {
+      sController.detach();
+      sController = null;
+    }
+    if (sOverlayView != null) {
+      RelativeLayout parent = Main.MainActivity.findViewById(R.id.VideoLayout);
+      if (parent != null) parent.removeView(sOverlayView);
+      sOverlayView = null;
+    }
+  }
+
+  public static synchronized void onPlay() {
+    if (sController != null) sController.onPlay();
+  }
+
+  public static synchronized void onPause() {
+    if (sController != null) sController.onPause();
+  }
+
+  public static synchronized void onSeek(long positionMs) {
+    if (sController != null) sController.onSeek(positionMs);
+  }
+
+  public static synchronized void onSpeedChanged(double speed) {
+    if (sController != null) sController.onSpeedChanged(speed);
+  }
+
+  public static synchronized void updateLayout(int left, int top, int right, int bottom) {
+    if (sOverlayView == null) return;
+    Rect r = new Rect(left, top, right, bottom);
+    sController.updateLayout(r);
+  }
+
+  public static synchronized void onPlayWithPath(String path) {
+    attach();
+    if (sController == null) return;
+    Uri uri = null;
+    try {
+      if (path == null || path.isEmpty()) return;
+      if (path.startsWith("file:")) {
+        uri = Uri.parse(path);
+      } else {
+        uri = Uri.fromFile(new File(path));
+      }
+    } catch (Throwable t) {
+      // ignore
+    }
+    boolean found = sController.discoverSameBasenameFile(uri);
+    if (found) {
+      sController.onPlay();
+    } else {
+      android.util.Log.d("DanmakuManager", "No same-basename danmaku file found for: " + path);
+    }
+  }
+
+  public static synchronized void applySettings(boolean enabled,
+                                                double density,
+                                                double speed,
+                                                int fontSizeSp,
+                                                double opacity,
+                                                boolean noOverlap,
+                                                int maxVisibleOrNeg1) {
+    attach();
+    if (sController == null) return;
+    Integer mv = maxVisibleOrNeg1 < 1 ? null : Integer.valueOf(maxVisibleOrNeg1);
+    sController.applySettings(enabled, density, speed, fontSizeSp, opacity, noOverlap, mv);
+  }
+}

@@ -1,0 +1,45 @@
+package @APP_PACKAGE@.overlay;
+
+import android.content.Context;
+import android.graphics.Rect;
+import android.util.AttributeSet;
+import android.view.ViewGroup;
+import android.widget.FrameLayout;
+
+import master.flame.danmaku.ui.widget.DanmakuView;
+
+public class DanmakuOverlayView extends FrameLayout {
+  private final DanmakuView danmakuView;
+
+  public DanmakuOverlayView(Context context) {
+    this(context, null);
+  }
+
+  public DanmakuOverlayView(Context context, AttributeSet attrs) {
+    super(context, attrs);
+    danmakuView = new DanmakuView(context);
+    LayoutParams lp = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
+    addView(danmakuView, lp);
+    setClipToPadding(false);
+    setClipChildren(false);
+    setFocusable(false);
+  }
+
+  public DanmakuView getDanmakuView() {
+    return danmakuView;
+  }
+
+  public void setOverlayRect(Rect rect) {
+    if (rect == null) return;
+    ViewGroup.LayoutParams lp = getLayoutParams();
+    int w = Math.max(0, rect.right - rect.left);
+    int h = Math.max(0, rect.bottom - rect.top);
+    if (lp == null) {
+      lp = new FrameLayout.LayoutParams(w, h);
+    } else {
+      lp.width = w;
+      lp.height = h;
+    }
+    setLayoutParams(lp);
+  }
+}

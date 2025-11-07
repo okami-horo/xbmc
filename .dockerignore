@@ -1,0 +1,20 @@
+# Docker build context ignores for Kodi repo
+.git/
+.gitignore
+.dockerignore
+.vscode/
+.idea/
+.cache/
+*.log
+*.tmp
+*.swp
+/build*/
+/kodi-build*/
+/Debug/
+/Release/
+/CMakeCache.txt
+/CMakeFiles/
+/cmake_install.cmake
+android-secrets/
+dist/
+out/

@@ -1,0 +1,151 @@
+package @APP_PACKAGE@.overlay;
+
+import android.content.Context;
+import android.graphics.Rect;
+import android.net.Uri;
+import android.util.Log;
+
+import java.io.File;
+
+import master.flame.danmaku.ui.widget.DanmakuView;
+
+public class DanmakuController {
+  private static final String TAG = "DanmakuController";
+
+  private final Context context;
+  private final DanmakuOverlayView overlayView;
+
+  private boolean attached = false;
+  private boolean playing = false;
+  private double density = 1.0;
+  private double speed = 1.0;
+  private int fontSizeSp = 24;
+  private double opacity = 1.0;
+  private boolean noOverlap = false;
+  private Integer maxVisible = null;
+  private long lastStartNs = 0L;
+
+  public DanmakuController(Context context, DanmakuOverlayView overlayView) {
+    this.context = context.getApplicationContext();
+    this.overlayView = overlayView;
+  }
+
+  public void attach() {
+    if (attached) return;
+    attached = true;
+  }
+
+  public void detach() {
+    if (!attached) return;
+    stopOverlay();
+    attached = false;
+  }
+
+  public void onPlay() {
+    playing = true;
+    startOverlayIfReady();
+  }
+
+  public void onPause() {
+    playing = false;
+    pauseOverlay();
+  }
+
+  public void onSeek(long positionMs) {
+    // In a fuller implementation, update base time
+    Log.d(TAG, "onSeek: " + positionMs);
+  }
+
+  public void onSpeedChanged(double speed) {
+    Log.d(TAG, "onSpeedChanged: " + speed);
+    this.speed = speed;
+  }
+
+  public void updateLayout(Rect rect) {
+    if (overlayView != null) {
+      overlayView.setOverlayRect(rect);
+    }
+  }
+
+  public void applySettings(boolean enabled,
+                            double density,
+                            double speed,
+                            int fontSizeSp,
+                            double opacity,
+                            boolean noOverlap,
+                            Integer maxVisible) {
+    Log.d(TAG, "applySettings enabled=" + enabled);
+    this.density = density;
+    this.speed = speed;
+    this.fontSizeSp = fontSizeSp;
+    this.opacity = opacity;
+    this.noOverlap = noOverlap;
+    this.maxVisible = maxVisible;
+    if (!enabled) {
+      stopOverlay();
+      return;
+    }
+    startOverlayIfReady();
+  }
+
+  public boolean discoverSameBasenameFile(Uri mediaUri) {
+    if (mediaUri == null) return false;
+    String path = mediaUri.getPath();
+    if (path == null) return false;
+    File f = new File(path);
+    if (!f.exists()) return false;
+    String name = f.getName();
+    int dot = name.lastIndexOf('.');
+    if (dot <= 0) return false;
+    String xml = name.substring(0, dot) + ".xml";
+    File candidate = new File(f.getParentFile(), xml);
+    boolean ok = candidate.exists();
+    Log.d(TAG, "discoverSameBasenameFile: " + ok + " -> " + candidate.getAbsolutePath());
+    return ok;
+  }
+
+  private void startOverlayIfReady() {
+    DanmakuView view = overlayView != null ? overlayView.getDanmakuView() : null;
+    if (view == null) return;
+    if (!withinFrameBudget()) {
+      Log.d(TAG, "startOverlayIfReady: skipped due to frame budget");
+      return;
+    }
+    if (!view.isPrepared()) {
+      // Minimal bring-up: let DFM handle preparation in app lifecycle when fully wired
+    }
+    if (!view.isShown()) {
+      view.show();
+      lastStartNs = System.nanoTime();
+    }
+  }
+
+  private void pauseOverlay() {
+    DanmakuView view = overlayView != null ? overlayView.getDanmakuView() : null;
+    if (view == null) return;
+    if (view.isPrepared()) {
+      view.pause();
+    }
+  }
+
+  private void stopOverlay() {
+    DanmakuView view = overlayView != null ? overlayView.getDanmakuView() : null;
+    if (view == null) return;
+    try {
+      view.release();
+    } catch (Throwable t) {
+      Log.w(TAG, "release error", t);
+    }
+  }
+
+  private boolean withinFrameBudget() {
+    // Very lightweight guard: if density is extremely high or consecutive starts are too close,
+    // skip to avoid jank on low-end devices. This is a placeholder for a real metric.
+    if (density > 1.0) return false;
+    long now = System.nanoTime();
+    if (lastStartNs != 0L && (now - lastStartNs) < 8_000_000L) { // <8ms since last start
+      return false;
+    }
+    return true;
+  }
+}

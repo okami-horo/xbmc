@@ -43,6 +43,11 @@
 
 using namespace KODI;
 
+#if defined(TARGET_ANDROID)
+#include "platform/android/activity/JNIDanmakuBridge.h"
+#include "settings/danmaku/DanmakuSettings.h"
+#endif
+
 CApplicationPlayerCallback::CApplicationPlayerCallback()
 {
 }
@@ -105,6 +110,18 @@ void CApplicationPlayerCallback::OnPlayBackStarted(const CFileItem& file)
 
   CGUIMessage msg(GUI_MSG_PLAYBACK_STARTED, 0, 0, 0, 0, itemCurrentFile);
   CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg);
+
+#if defined(TARGET_ANDROID)
+  if (CDanmakuSettings::GetInstance().GetEnabled())
+  {
+    CJNIDanmakuBridge::Attach();
+    CJNIDanmakuBridge::OnPlayWithPath(file.GetPath());
+    auto& components2 = CServiceBroker::GetAppComponents();
+    const auto appPlayer2 = components2.GetComponent<CApplicationPlayer>();
+    if (appPlayer2)
+      appPlayer2->SetSubtitleVisible(false);
+  }
+#endif
 }
 
 void CApplicationPlayerCallback::OnPlayerCloseFile(const CFileItem& file,
@@ -254,6 +271,11 @@ void CApplicationPlayerCallback::OnPlayBackPaused()
 
   CGUIMessage msg(GUI_MSG_PLAYBACK_PAUSED, 0, 0);
   CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg);
+
+#if defined(TARGET_ANDROID)
+  if (CDanmakuSettings::GetInstance().GetEnabled())
+    CJNIDanmakuBridge::OnPause();
+#endif
 }
 
 void CApplicationPlayerCallback::OnPlayBackResumed()
@@ -264,6 +286,11 @@ void CApplicationPlayerCallback::OnPlayBackResumed()
 
   CGUIMessage msg(GUI_MSG_PLAYBACK_RESUMED, 0, 0);
   CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg);
+
+#if defined(TARGET_ANDROID)
+  if (CDanmakuSettings::GetInstance().GetEnabled())
+    CJNIDanmakuBridge::OnPlay();
+#endif
 }
 
 void CApplicationPlayerCallback::OnPlayBackStopped()
@@ -272,6 +299,11 @@ void CApplicationPlayerCallback::OnPlayBackStopped()
 
   CGUIMessage msg(GUI_MSG_PLAYBACK_STOPPED, 0, 0);
   CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg);
+
+#if defined(TARGET_ANDROID)
+  if (CDanmakuSettings::GetInstance().GetEnabled())
+    CJNIDanmakuBridge::Detach();
+#endif
 }
 
 void CApplicationPlayerCallback::OnPlayBackError()
@@ -306,6 +338,11 @@ void CApplicationPlayerCallback::OnPlayBackSeek(int64_t iTime, int64_t seekOffse
 
   CGUIMessage msg(GUI_MSG_PLAYBACK_SEEKED, 0, 0, iTime, seekOffset);
   CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg);
+
+#if defined(TARGET_ANDROID)
+  if (CDanmakuSettings::GetInstance().GetEnabled())
+    CJNIDanmakuBridge::OnSeek(iTime);
+#endif
 }
 
 void CApplicationPlayerCallback::OnPlayBackSeekChapter(int iChapter)
@@ -323,6 +360,11 @@ void CApplicationPlayerCallback::OnPlayBackSpeedChanged(int iSpeed)
 
   CGUIMessage msg(GUI_MSG_PLAYBACK_SPEED_CHANGED, 0, 0, iSpeed);
   CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg);
+
+#if defined(TARGET_ANDROID)
+  if (CDanmakuSettings::GetInstance().GetEnabled())
+    CJNIDanmakuBridge::OnSpeedChanged(static_cast<double>(iSpeed));
+#endif
 }
 
 void CApplicationPlayerCallback::OnAVChange()

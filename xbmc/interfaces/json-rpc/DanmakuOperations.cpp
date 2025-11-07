@@ -3,6 +3,9 @@
 #include "ServiceBroker.h"
 #include "settings/danmaku/DanmakuSettings.h"
 #include "utils/Variant.h"
+#if defined(TARGET_ANDROID)
+#include "platform/android/activity/JNIDanmakuBridge.h"
+#endif
 
 using namespace JSONRPC;
 
@@ -17,6 +20,19 @@ JSONRPC_STATUS CDanmakuOperations::Toggle(const std::string& method,
 
   bool enabled = parameterObject["enabled"].asBoolean();
   CDanmakuSettings::GetInstance().SetEnabled(enabled);
+#if defined(TARGET_ANDROID)
+  {
+    auto& s = CDanmakuSettings::GetInstance();
+    CJNIDanmakuBridge::ApplySettings(
+        enabled,
+        s.GetDensity(),
+        s.GetSpeed(),
+        s.GetFontSizeSp(),
+        s.GetOpacity(),
+        s.GetNoOverlap(),
+        s.GetMaxVisible().has_value() ? *s.GetMaxVisible() : -1);
+  }
+#endif
   result.clear();
   result["enabled"] = enabled;
   return OK;
@@ -49,6 +65,16 @@ JSONRPC_STATUS CDanmakuOperations::SetSettings(const std::string& method,
       s.SetMaxVisible(std::nullopt);
   }
 
+#if defined(TARGET_ANDROID)
+  CJNIDanmakuBridge::ApplySettings(
+      s.GetEnabled(),
+      s.GetDensity(),
+      s.GetSpeed(),
+      s.GetFontSizeSp(),
+      s.GetOpacity(),
+      s.GetNoOverlap(),
+      s.GetMaxVisible().has_value() ? *s.GetMaxVisible() : -1);
+#endif
   result.clear();
   result["ack"] = true;
   return OK;

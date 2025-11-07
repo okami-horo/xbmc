@@ -7,6 +7,7 @@
  */
 
 #include "JNIXBMCMainView.h"
+#include "JNIDanmakuBridge.h"
 
 #include "CompileInfo.h"
 #include "utils/StringUtils.h"
@@ -93,6 +94,7 @@ void CJNIXBMCMainView::surfaceChanged(CJNISurfaceHolder holder, int format, int 
 {
   if (m_callback)
     m_callback->surfaceChanged(holder, format, width, height);
+  CJNIDanmakuBridge::UpdateLayout(0, 0, width, height);
 }
 
 void CJNIXBMCMainView::surfaceCreated(CJNISurfaceHolder holder)
