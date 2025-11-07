@@ -1,11 +1,17 @@
 name: SonarQube
 
-# Only run after push to master - PR analysis is very unhelpful since we cannot tune the
-# ruleset, quality gate etc.
+# Runs on all branches and can be manually triggered
 on:
   push:
     branches:
-      - master
+      - '**'
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Branch to analyze'
+        required: false
+        default: 'master'
+        type: string
 jobs:
   sonarqube:
     if: github.repository == 'xbmc/xbmc'
