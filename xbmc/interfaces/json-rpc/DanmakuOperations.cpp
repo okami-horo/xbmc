@@ -1,6 +1,7 @@
 #include "DanmakuOperations.h"
 
 #include "ServiceBroker.h"
+#include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "settings/danmaku/DanmakuSettings.h"
 #include "utils/Variant.h"
