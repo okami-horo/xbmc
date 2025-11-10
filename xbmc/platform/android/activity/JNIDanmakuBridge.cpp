@@ -15,12 +15,11 @@ static std::string s_dmClassName = std::string(CCompileInfo::GetClass()) + "/ove
 namespace
 {
 // Local helpers to avoid dependency on external helpers that may be missing in some builds
-[[nodiscard]] jhstring GetDotClassName(const std::string& slashName)
+[[nodiscard]] std::string GetDotClassName(const std::string& slashName)
 {
   std::string name = slashName;
   std::replace(name.begin(), name.end(), '/', '.');
-  JNIEnv* env = xbmc_jnienv();
-  return jhstring::fromJNI(env->NewStringUTF(name.c_str()));
+  return name;
 }
 
 [[nodiscard]] jhstring MakeJString(const std::string& str)
