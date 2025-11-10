@@ -6,10 +6,26 @@
 
 #include <androidjni/Context.h>
 #include <androidjni/jutils-details.hpp>
+#include <algorithm>
 
 using namespace jni;
 
 static std::string s_dmClassName = std::string(CCompileInfo::GetClass()) + "/overlay/DanmakuManager";
+
+// Local helpers to avoid dependency on external helpers that may be missing in some builds
+static jhstring GetDotClassName(const std::string& slashName)
+{
+  std::string name = slashName;
+  std::replace(name.begin(), name.end(), '/', '.');
+  JNIEnv* env = xbmc_jnienv();
+  return jhstring::fromJNI(env->NewStringUTF(name.c_str()));
+}
+
+static jhstring MakeJString(const std::string& str)
+{
+  JNIEnv* env = xbmc_jnienv();
+  return jhstring::fromJNI(env->NewStringUTF(str.c_str()));
+}
 
 void CJNIDanmakuBridge::Attach()
 {
@@ -124,7 +140,7 @@ void CJNIDanmakuBridge::OnPlayWithPath(const std::string& path)
   {
     call_static_method<void>(xbmc_jnienv(),
                              CJNIContext::getClassLoader().loadClass(GetDotClassName(s_dmClassName)),
-                             "onPlayWithPath", "(Ljava/lang/String;)V", jhstring(path));
+                             "onPlayWithPath", "(Ljava/lang/String;)V", MakeJString(path));
   }
   catch (...)
   {
