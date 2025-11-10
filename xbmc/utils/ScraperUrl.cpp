@@ -26,6 +26,7 @@
 #include <algorithm>
 #include <cstring>
 #include <sstream>
+#include <string_view>
 
 CScraperUrl::CScraperUrl() : m_relevance(0.0), m_parsed(false)
 {
@@ -390,7 +391,7 @@ bool CScraperUrl::Get(const SUrlEntry& scrURL,
     }
   }
   else if (ftype == CMime::FileTypePlainText ||
-           StringUtils::EqualsNoCase(mimeType.substr(0, 5), "text/"))
+           StringUtils::EqualsNoCase(std::string_view{mimeType}.substr(0, 5), "text/"))
   {
     std::string realTextCharset;
     std::string converted;

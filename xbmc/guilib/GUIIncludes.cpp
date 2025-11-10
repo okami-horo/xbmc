@@ -22,13 +22,13 @@
 
 using namespace KODI::GUILIB;
 
-static constexpr std::array<std::string_view, 16> CONSTANT_ATTRIBUTES = {
+constexpr std::array<std::string_view, 16> CONSTANT_ATTRIBUTES = {
     "acceleration", "border", "center", "delay", "end", "h",     "height", "max",
     "min",          "repeat", "start",  "time",  "w",   "width", "x",      "y",
 };
 static_assert(std::ranges::is_sorted(CONSTANT_ATTRIBUTES));
 
-static constexpr std::array<std::string_view, 35> CONSTANT_NODES = {
+constexpr std::array<std::string_view, 35> CONSTANT_NODES = {
     "bordersize",  "bottom",     "centerbottom",  "centerleft", "centerright", "centertop",
     "depth",       "fadetime",   "focusposition", "height",     "itemgap",     "left",
     "movement",    "offsetx",    "offsety",       "pauseatend", "posx",        "posy",
@@ -38,9 +38,9 @@ static constexpr std::array<std::string_view, 35> CONSTANT_NODES = {
 };
 static_assert(std::ranges::is_sorted(CONSTANT_NODES));
 
-static constexpr std::string_view EXPRESSION_ATTRIBUTE = "condition";
+constexpr std::string_view EXPRESSION_ATTRIBUTE = "condition";
 
-static constexpr std::array<std::string_view, 4> EXPRESSION_NODES = {
+constexpr std::array<std::string_view, 4> EXPRESSION_NODES = {
     "enable",
     "selected",
     "usealttexture",

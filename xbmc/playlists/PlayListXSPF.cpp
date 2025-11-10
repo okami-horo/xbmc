@@ -16,6 +16,8 @@
 #include "utils/XBMCTinyXML2.h"
 #include "utils/log.h"
 
+#include <string_view>
+
 namespace
 {
 
@@ -100,7 +102,7 @@ bool CPlayListXSPF::Load(const std::string& strFileName)
         localpath = "/";
 #endif
         // Path starts after "file:///"
-        localpath += CURL::Decode(location.substr(8));
+        localpath += CURL::Decode(std::string_view{location}.substr(8));
       }
       else if (uri.GetProtocol().empty())
       {

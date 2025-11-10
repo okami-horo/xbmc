@@ -12,8 +12,10 @@ using namespace jni;
 
 static std::string s_dmClassName = std::string(CCompileInfo::GetClass()) + "/overlay/DanmakuManager";
 
+namespace
+{
 // Local helpers to avoid dependency on external helpers that may be missing in some builds
-static jhstring GetDotClassName(const std::string& slashName)
+[[nodiscard]] jhstring GetDotClassName(const std::string& slashName)
 {
   std::string name = slashName;
   std::replace(name.begin(), name.end(), '/', '.');
@@ -21,11 +23,17 @@ static jhstring GetDotClassName(const std::string& slashName)
   return jhstring::fromJNI(env->NewStringUTF(name.c_str()));
 }
 
-static jhstring MakeJString(const std::string& str)
+[[nodiscard]] jhstring MakeJString(const std::string& str)
 {
   JNIEnv* env = xbmc_jnienv();
   return jhstring::fromJNI(env->NewStringUTF(str.c_str()));
 }
+
+[[nodiscard]] jhclass LoadDanmakuManagerClass()
+{
+  return CJNIContext::getClassLoader().loadClass(GetDotClassName(s_dmClassName));
+}
+} // namespace
 
 void CJNIDanmakuBridge::Attach()
 {
@@ -33,7 +41,7 @@ void CJNIDanmakuBridge::Attach()
   try
   {
     call_static_method<void>(xbmc_jnienv(),
-                             CJNIContext::getClassLoader().loadClass(GetDotClassName(s_dmClassName)),
+                             LoadDanmakuManagerClass(),
                              "attach", "()V");
   }
   catch (...)
@@ -48,7 +56,7 @@ void CJNIDanmakuBridge::Detach()
   try
   {
     call_static_method<void>(xbmc_jnienv(),
-                             CJNIContext::getClassLoader().loadClass(GetDotClassName(s_dmClassName)),
+                             LoadDanmakuManagerClass(),
                              "detach", "()V");
   }
   catch (...)
@@ -63,7 +71,7 @@ void CJNIDanmakuBridge::OnPlay()
   try
   {
     call_static_method<void>(xbmc_jnienv(),
-                             CJNIContext::getClassLoader().loadClass(GetDotClassName(s_dmClassName)),
+                             LoadDanmakuManagerClass(),
                              "onPlay", "()V");
   }
   catch (...)
@@ -78,7 +86,7 @@ void CJNIDanmakuBridge::OnPause()
   try
   {
     call_static_method<void>(xbmc_jnienv(),
-                             CJNIContext::getClassLoader().loadClass(GetDotClassName(s_dmClassName)),
+                             LoadDanmakuManagerClass(),
                              "onPause", "()V");
   }
   catch (...)
@@ -93,8 +101,9 @@ void CJNIDanmakuBridge::OnSeek(int64_t positionMs)
   try
   {
     call_static_method<void>(xbmc_jnienv(),
-                             CJNIContext::getClassLoader().loadClass(GetDotClassName(s_dmClassName)),
-                             "onSeek", "(J)V", static_cast<jlong>(positionMs));
+                             LoadDanmakuManagerClass(),
+                             "onSeek", "(J)V",
+                             static_cast<jlong>(positionMs));
   }
   catch (...)
   {
@@ -108,8 +117,9 @@ void CJNIDanmakuBridge::OnSpeedChanged(double speed)
   try
   {
     call_static_method<void>(xbmc_jnienv(),
-                             CJNIContext::getClassLoader().loadClass(GetDotClassName(s_dmClassName)),
-                             "onSpeedChanged", "(D)V", static_cast<jdouble>(speed));
+                             LoadDanmakuManagerClass(),
+                             "onSpeedChanged", "(D)V",
+                             static_cast<jdouble>(speed));
   }
   catch (...)
   {
@@ -123,9 +133,12 @@ void CJNIDanmakuBridge::UpdateLayout(int left, int top, int right, int bottom)
   try
   {
     call_static_method<void>(xbmc_jnienv(),
-                             CJNIContext::getClassLoader().loadClass(GetDotClassName(s_dmClassName)),
+                             LoadDanmakuManagerClass(),
                              "updateLayout", "(IIII)V",
-                             static_cast<jint>(left), static_cast<jint>(top), static_cast<jint>(right), static_cast<jint>(bottom));
+                             static_cast<jint>(left),
+                             static_cast<jint>(top),
+                             static_cast<jint>(right),
+                             static_cast<jint>(bottom));
   }
   catch (...)
   {
@@ -139,8 +152,9 @@ void CJNIDanmakuBridge::OnPlayWithPath(const std::string& path)
   try
   {
     call_static_method<void>(xbmc_jnienv(),
-                             CJNIContext::getClassLoader().loadClass(GetDotClassName(s_dmClassName)),
-                             "onPlayWithPath", "(Ljava/lang/String;)V", MakeJString(path));
+                             LoadDanmakuManagerClass(),
+                             "onPlayWithPath", "(Ljava/lang/String;)V",
+                             MakeJString(path));
   }
   catch (...)
   {
@@ -163,7 +177,7 @@ void CJNIDanmakuBridge::ApplySettings(bool enabled,
   try
   {
     call_static_method<void>(xbmc_jnienv(),
-                             CJNIContext::getClassLoader().loadClass(GetDotClassName(s_dmClassName)),
+                             LoadDanmakuManagerClass(),
                              "applySettings", "(ZDDIDZI)V",
                              static_cast<jboolean>(enabled),
                              static_cast<jdouble>(density),
@@ -184,7 +198,7 @@ bool CJNIDanmakuBridge::IsDiscoveryAvailable()
   try
   {
     jboolean ret = call_static_method<jboolean>(xbmc_jnienv(),
-                                                CJNIContext::getClassLoader().loadClass(GetDotClassName(s_dmClassName)),
+                                                LoadDanmakuManagerClass(),
                                                 "isDiscoveryAvailable", "()Z");
     return ret == JNI_TRUE;
   }
