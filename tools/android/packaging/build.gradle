@@ -4,6 +4,7 @@ buildscript {
     repositories {
         mavenCentral()
         google()
+        maven { url 'https://jitpack.io' } // Needed for com.github.ctiao artifacts
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:8.11.1'
@@ -17,5 +18,6 @@ allprojects {
     repositories {
         mavenCentral()
         google()
+        maven { url 'https://jitpack.io' } // Needed for com.github.ctiao artifacts
     }
 }
