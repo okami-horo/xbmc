@@ -63,6 +63,9 @@ android {
             jniLibs.srcDirs = ['lib']
         }
     }
+    buildFeatures {
+        buildConfig true
+    }
     packagingOptions{
       doNotStrip '**.setup'
       jniLibs {
