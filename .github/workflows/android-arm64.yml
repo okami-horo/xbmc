@@ -32,7 +32,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       KODI_ANDROID_BUGLY_APP_ID: ${{ secrets.KODI_ANDROID_BUGLY_APP_ID }}
-      HAS_RELEASE_KEYSTORE: ${{ secrets.KODI_ANDROID_KEYSTORE_BASE64 != '' }}
+      HAS_RELEASE_KEYSTORE: ${{ secrets.KODI_ANDROID_KEYSTORE_BASE64 != '' && secrets.KODI_ANDROID_STORE_PASSWORD != '' && secrets.KODI_ANDROID_KEY_ALIAS != '' && secrets.KODI_ANDROID_KEY_PASSWORD != '' }}
     
     steps:
       - name: Checkout Repository
