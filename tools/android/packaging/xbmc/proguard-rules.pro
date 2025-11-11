@@ -5,3 +5,7 @@
 # Keep JSON models and JNI-bound classes if any appear under our packages
 -keep class org.xbmc.** { *; }
 -keep class tv.danmaku.** { *; }
+
+# Bugly crash reporting SDK
+-keep class com.tencent.bugly.** { *; }
+-dontwarn com.tencent.bugly.**

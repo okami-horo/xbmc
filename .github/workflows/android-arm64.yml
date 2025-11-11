@@ -59,6 +59,13 @@ jobs:
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
       
+      - name: Export Bugly Secrets
+        if: ${{ secrets.KODI_ANDROID_BUGLY_APP_ID != '' }}
+        run: |
+          {
+            echo "KODI_ANDROID_BUGLY_APP_ID=${{ secrets.KODI_ANDROID_BUGLY_APP_ID }}"
+          } >> "$GITHUB_ENV"
+      
       - name: Export SDK_PATH
         run: echo "SDK_PATH=$ANDROID_SDK_ROOT" >> $GITHUB_ENV
       

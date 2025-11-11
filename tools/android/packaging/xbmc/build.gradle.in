@@ -1,5 +1,13 @@
 apply plugin: 'com.android.application'
 
+def escapeForJavaString = { value ->
+    (value ?: "").replace("\\", "\\\\").replace("\"", "\\\"")
+}
+
+def buglyAppId = System.getenv("KODI_ANDROID_BUGLY_APP_ID") ?: ""
+def buglyAppChannel = System.getenv("KODI_ANDROID_BUGLY_CHANNEL") ?: "official"
+def buglyUploadDebug = (System.getenv("KODI_ANDROID_BUGLY_UPLOAD_DEBUG") ?: "false").toBoolean()
+
 android {
     namespace = '@APP_PACKAGE@'
     compileSdk = @TARGET_SDK@
@@ -11,6 +19,9 @@ android {
         targetSdk = @TARGET_SDK@
         versionCode = @APP_VERSION_CODE_ANDROID@
         versionName = "@APP_VERSION@"
+        buildConfigField "String", "BUGLY_APP_ID", "\"${escapeForJavaString(buglyAppId)}\""
+        buildConfigField "String", "BUGLY_APP_CHANNEL", "\"${escapeForJavaString(buglyAppChannel)}\""
+        buildConfigField "boolean", "BUGLY_UPLOAD_IN_DEBUG", "${buglyUploadDebug}"
     }
     signingConfigs {
         release {
@@ -69,6 +80,8 @@ dependencies {
     implementation 'androidx.tvprovider:tvprovider:1.1.0'
     implementation 'com.google.code.gson:gson:2.13.1'
     implementation 'com.github.bilibili:DanmakuFlameMaster:0.9.25'
+    implementation 'com.tencent.bugly:crashreport:4.1.9.3'
+    implementation 'com.tencent.bugly:nativecrashreport:3.9.2'
 }
 
 java {
