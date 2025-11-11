@@ -30,6 +30,9 @@ jobs:
   build:
     name: Build Android ARM64 APK
     runs-on: ubuntu-latest
+    env:
+      KODI_ANDROID_BUGLY_APP_ID: ${{ secrets.KODI_ANDROID_BUGLY_APP_ID }}
+      HAS_RELEASE_KEYSTORE: ${{ secrets.KODI_ANDROID_KEYSTORE_BASE64 != '' }}
     
     steps:
       - name: Checkout Repository
@@ -58,13 +61,6 @@ jobs:
       
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
-      
-      - name: Export Bugly Secrets
-        if: ${{ secrets.KODI_ANDROID_BUGLY_APP_ID != '' }}
-        run: |
-          {
-            echo "KODI_ANDROID_BUGLY_APP_ID=${{ secrets.KODI_ANDROID_BUGLY_APP_ID }}"
-          } >> "$GITHUB_ENV"
       
       - name: Export SDK_PATH
         run: echo "SDK_PATH=$ANDROID_SDK_ROOT" >> $GITHUB_ENV
@@ -160,7 +156,7 @@ jobs:
           fi
       
       - name: Configure release signing
-        if: ${{ secrets.KODI_ANDROID_KEYSTORE_BASE64 != '' }}
+        if: ${{ env.HAS_RELEASE_KEYSTORE == 'true' }}
         env:
           STORE_PASSWORD: ${{ secrets.KODI_ANDROID_STORE_PASSWORD }}
           KEY_ALIAS: ${{ secrets.KODI_ANDROID_KEY_ALIAS }}
