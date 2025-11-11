@@ -28,8 +28,8 @@
   - 初始支持“同名弹幕文件”（如 `movie.mp4` → `movie.xml`），用 `BaseDanmakuParser` 解析；后续可对接在线接口（DanDanPlay/B站 API）。
 - 依赖与构建（Gradle）：
   - `repositories { mavenCentral() }`（必要时启用 JitPack）。
-  - `implementation 'com.github.ctiao:DanmakuFlameMaster:0.9.25'`
-  - `implementation 'com.github.ctiao:ndkbitmap-armv7a:0.9.21'`
+  - `implementation 'com.github.bilibili:DanmakuFlameMaster:0.9.25'`
+  - `implementation 'com.github.bilibili:ndkbitmap-armv7a:0.9.21'`
 
 ### 工作项清单
 - Java：新增 `XBMCDanmakuView.java.in`，封装 DFM 视图与 UI 线程 add/remove、seek、矩形同步。
@@ -115,8 +115,8 @@
 - Android 视图：`activity_main.xml` 的 `VideoLayout`、`XBMCVideoView.java.in`（视频层）、`XBMCMainView.java.in`（GUI 层）。
 - JNI/Activity：`CJNIXBMCVideoView`、`CJNIXBMCMainView`、`XBMCApp.cpp`（`OnPlayBackStarted/Paused/Stopped/OnSeek`）。
 - DFM 依赖（示例）：
-  - `implementation 'com.github.ctiao:DanmakuFlameMaster:0.9.25'`
-  - `implementation 'com.github.ctiao:ndkbitmap-armv7a:0.9.21'`
+  - `implementation 'com.github.bilibili:DanmakuFlameMaster:0.9.25'`
+  - `implementation 'com.github.bilibili:ndkbitmap-armv7a:0.9.21'`
 
 ---
 本文档基于对 Kodi 源码（Android 窗口/视图/渲染与字幕管线）的静态分析与 DFM 文档/示例的调研，供方案决策与实施落地参考。

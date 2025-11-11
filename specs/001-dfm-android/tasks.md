@@ -7,7 +7,7 @@
 
 **Purpose**: Android packaging setup, dependency, and scaffolding
 
-- [X] T001 Add DFM dependency in tools/android/packaging/xbmc/build.gradle.in (implementation 'com.github.ctiao:DanmakuFlameMaster:0.9.25')
+- [X] T001 Add DFM dependency in tools/android/packaging/xbmc/build.gradle.in (implementation 'com.github.bilibili:DanmakuFlameMaster:0.9.25')
 - [X] T002 Create package directories for overlay Java in tools/android/packaging/xbmc/src/overlay/
 - [X] T003 [P] Add proguard/consumer rules for DFM in tools/android/packaging/xbmc/proguard-rules.pro and reference from build.gradle.in
 - [X] T004 [P] Add third-party NOTICE for DFM in docs/third-party/dfm.md and include in Android packaging (tools/android/packaging/xbmc)

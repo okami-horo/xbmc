@@ -29,7 +29,7 @@
 ## Open Items (resolved or next steps)
 
 - Library version for DFM
-  Status: RESOLVED. Pin to `com.github.ctiao:DanmakuFlameMaster:0.9.25`. Note: verify ABI coverage on Android TV (arm64-v8a). Fallback: exclude ndkbitmap auxiliary libs or vendor a fork providing arm64 if required.
+  Status: RESOLVED. Pin to `com.github.bilibili:DanmakuFlameMaster:0.9.25`. Note: verify ABI coverage on Android TV (arm64-v8a). Fallback: exclude ndkbitmap auxiliary libs or vendor a fork providing arm64 if required.
 
 - License compatibility (Apache-2.0 with GPL-2.0-or-later)
   Status: RESOLVED. DFM is Apache-2.0 and compatible with repository license GPL-2.0-or-later when distributed under GPLv3+. Action: include Apache-2.0 NOTICE/attribution in APK/docs and ensure PR notes distribution under GPLv3 or later.
