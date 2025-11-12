@@ -1,0 +1,46 @@
+package @APP_PACKAGE@;
+
+import android.content.Context;
+import android.util.Log;
+
+import com.tencent.bugly.crashreport.CrashReport;
+
+import java.util.concurrent.atomic.AtomicBoolean;
+
+final class BuglyInitializer
+{
+  private static final String TAG = "BuglyInitializer";
+  private static final AtomicBoolean sInitialized = new AtomicBoolean(false);
+
+  private BuglyInitializer() {}
+
+  static void initialize(Context context)
+  {
+    if (context == null)
+      return;
+
+    if (sInitialized.get())
+      return;
+
+    final String appId = BuildConfig.BUGLY_APP_ID;
+    if (appId == null || appId.isEmpty())
+    {
+      Log.i(TAG, "Bugly disabled because BUGLY_APP_ID is empty.");
+      return;
+    }
+
+    Context appContext = context.getApplicationContext();
+    CrashReport.UserStrategy strategy = new CrashReport.UserStrategy(appContext);
+    strategy.setAppChannel(BuildConfig.BUGLY_APP_CHANNEL);
+    strategy.setUploadProcess(true);
+
+    CrashReport.setIsDevelopmentDevice(appContext, BuildConfig.DEBUG);
+
+    final boolean shouldUploadInDebug = BuildConfig.DEBUG && BuildConfig.BUGLY_UPLOAD_IN_DEBUG;
+    CrashReport.initCrashReport(appContext, appId, shouldUploadInDebug, strategy);
+    sInitialized.set(true);
+    Log.i(TAG,
+          "Bugly initialized for channel " + BuildConfig.BUGLY_APP_CHANNEL +
+              " (uploadInDebug=" + shouldUploadInDebug + ")");
+  }
+}

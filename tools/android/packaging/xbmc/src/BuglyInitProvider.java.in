@@ -1,0 +1,46 @@
+package @APP_PACKAGE@;
+
+import android.content.ContentProvider;
+import android.content.ContentValues;
+import android.database.Cursor;
+import android.net.Uri;
+
+public class BuglyInitProvider extends ContentProvider
+{
+  @Override
+  public boolean onCreate()
+  {
+    BuglyInitializer.initialize(getContext());
+    return true;
+  }
+
+  @Override
+  public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder)
+  {
+    return null;
+  }
+
+  @Override
+  public String getType(Uri uri)
+  {
+    return null;
+  }
+
+  @Override
+  public Uri insert(Uri uri, ContentValues values)
+  {
+    throw new UnsupportedOperationException("Insert not supported");
+  }
+
+  @Override
+  public int delete(Uri uri, String selection, String[] selectionArgs)
+  {
+    throw new UnsupportedOperationException("Delete not supported");
+  }
+
+  @Override
+  public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs)
+  {
+    throw new UnsupportedOperationException("Update not supported");
+  }
+}

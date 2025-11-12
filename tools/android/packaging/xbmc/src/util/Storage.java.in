@@ -5,22 +5,57 @@ import android.os.Build;
 import android.os.Environment;
 import android.os.storage.StorageManager;
 import android.os.storage.StorageVolume;
+import android.util.Log;
+
+import java.io.File;
 
 public class Storage 
 {
+  private static final String TAG = "Storage";
+
   public static String getPrimaryStorageVolumePath(Context context)
   {
-    final String path;
     if (Build.VERSION.SDK_INT <= 29)
     {
-      path = Environment.getExternalStorageDirectory().getAbsolutePath();
+      return Environment.getExternalStorageDirectory().getAbsolutePath();
     }
-    else
+
+    if (context != null)
     {
-      StorageManager manager = (StorageManager) context.getSystemService(Context.STORAGE_SERVICE);
-      StorageVolume volume = manager.getPrimaryStorageVolume();
-      path = volume.getDirectory().getAbsolutePath();
+      try
+      {
+        StorageManager manager = (StorageManager) context.getSystemService(Context.STORAGE_SERVICE);
+        if (manager != null)
+        {
+          StorageVolume volume = manager.getPrimaryStorageVolume();
+          if (volume != null)
+          {
+            File dir = volume.getDirectory();
+            if (dir != null)
+              return dir.getAbsolutePath();
+          }
+        }
+      }
+      catch (SecurityException | NullPointerException e)
+      {
+        Log.w(TAG, "Unable to query primary storage volume; falling back to scoped path.", e);
+      }
     }
-    return path;
+
+    File fallback = context != null ? context.getExternalFilesDir(null) : null;
+    if (fallback != null)
+    {
+      File parent = fallback.getParentFile();
+      if (parent != null)
+      {
+        File grandParent = parent.getParentFile();
+        if (grandParent != null)
+          return grandParent.getAbsolutePath();
+        return parent.getAbsolutePath();
+      }
+      return fallback.getAbsolutePath();
+    }
+
+    return Environment.getExternalStorageDirectory().getAbsolutePath();
   }
 }

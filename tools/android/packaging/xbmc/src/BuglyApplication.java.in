@@ -1,34 +1,21 @@
 package @APP_PACKAGE@;
 
 import android.app.Application;
-import android.util.Log;
-
-import com.tencent.bugly.crashreport.CrashReport;
+import android.content.Context;
 
 public class BuglyApplication extends Application
 {
-  private static final String TAG = "BuglyApplication";
+  @Override
+  protected void attachBaseContext(Context base)
+  {
+    super.attachBaseContext(base);
+    BuglyInitializer.initialize(base);
+  }
 
   @Override
   public void onCreate()
   {
     super.onCreate();
-
-    final String appId = BuildConfig.BUGLY_APP_ID;
-    if (appId == null || appId.isEmpty())
-    {
-      Log.i(TAG, "Bugly is disabled because BUGLY_APP_ID is empty.");
-      return;
-    }
-
-    CrashReport.UserStrategy strategy = new CrashReport.UserStrategy(getApplicationContext());
-    strategy.setAppChannel(BuildConfig.BUGLY_APP_CHANNEL);
-    strategy.setUploadProcess(true);
-
-    CrashReport.setIsDevelopmentDevice(getApplicationContext(), BuildConfig.DEBUG);
-
-    final boolean shouldUploadInDebug = BuildConfig.DEBUG && BuildConfig.BUGLY_UPLOAD_IN_DEBUG;
-    CrashReport.initCrashReport(getApplicationContext(), appId, shouldUploadInDebug, strategy);
-    Log.i(TAG, "Bugly initialized for channel " + BuildConfig.BUGLY_APP_CHANNEL);
+    BuglyInitializer.initialize(this);
   }
 }
