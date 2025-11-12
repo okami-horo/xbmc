@@ -187,14 +187,26 @@ jobs:
             echo "Key alias '$KEY_ALIAS' not found in release keystore"
             exit 1
           fi
+
+          if ! keytool -list -keystore "$RELEASE_KEYSTORE" -storetype "$STORE_TYPE" -storepass "$STORE_PASSWORD" -alias "$KEY_ALIAS" -keypass "$KEY_PASSWORD" >/dev/null 2>&1; then
+            echo "Invalid key password for alias '$KEY_ALIAS'"
+            exit 1
+          fi
           
-          {
-            echo "KODI_ANDROID_STORE_FILE=$RELEASE_KEYSTORE"
-            echo "KODI_ANDROID_STORE_PASSWORD=$STORE_PASSWORD"
-            echo "KODI_ANDROID_KEY_ALIAS=$KEY_ALIAS"
-            echo "KODI_ANDROID_KEY_PASSWORD=$KEY_PASSWORD"
-            echo "KODI_ANDROID_STORE_TYPE=$STORE_TYPE"
-          } >> "$GITHUB_ENV"
+          write_env() {
+            local name=$1
+            local value=$2
+            value=${value//'%'/'%25'}
+            value=${value//$'\n'/'%0A'}
+            value=${value//$'\r'/'%0D'}
+            printf '%s=%s\n' "$name" "$value" >> "$GITHUB_ENV"
+          }
+
+          write_env "KODI_ANDROID_STORE_FILE" "$RELEASE_KEYSTORE"
+          write_env "KODI_ANDROID_STORE_PASSWORD" "$STORE_PASSWORD"
+          write_env "KODI_ANDROID_KEY_ALIAS" "$KEY_ALIAS"
+          write_env "KODI_ANDROID_KEY_PASSWORD" "$KEY_PASSWORD"
+          write_env "KODI_ANDROID_STORE_TYPE" "$STORE_TYPE"
       
       - name: Package APK
         id: package
