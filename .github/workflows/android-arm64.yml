@@ -183,15 +183,37 @@ jobs:
             exit 1
           fi
 
+          echo "Release keystore installed at: $RELEASE_KEYSTORE"
+          echo "Detected keystore type: $STORE_TYPE"
+          if command -v stat >/dev/null 2>&1; then
+            echo "Release keystore size: $(stat -c '%s' "$RELEASE_KEYSTORE") bytes"
+          fi
+          echo "Store password length: ${#STORE_PASSWORD}"
+          echo "Key password length: ${#KEY_PASSWORD}"
+
           if ! keytool -list -keystore "$RELEASE_KEYSTORE" -storetype "$STORE_TYPE" -storepass "$STORE_PASSWORD" -alias "$KEY_ALIAS" >/dev/null 2>&1; then
             echo "Key alias '$KEY_ALIAS' not found in release keystore"
             exit 1
           fi
 
-          if ! keytool -list -keystore "$RELEASE_KEYSTORE" -storetype "$STORE_TYPE" -storepass "$STORE_PASSWORD" -alias "$KEY_ALIAS" -keypass "$KEY_PASSWORD" >/dev/null 2>&1; then
-            echo "Invalid key password for alias '$KEY_ALIAS'"
+          TMP_KEYSTORE=$(mktemp)
+          if ! keytool -importkeystore \
+              -srckeystore "$RELEASE_KEYSTORE" \
+              -srcstoretype "$STORE_TYPE" \
+              -srcstorepass "$STORE_PASSWORD" \
+              -srckeypass "$KEY_PASSWORD" \
+              -destkeystore "$TMP_KEYSTORE" \
+              -deststoretype jks \
+              -deststorepass temp-pass \
+              -destkeypass temp-pass \
+              -alias "$KEY_ALIAS" \
+              -noprompt >/dev/null 2>&1; then
+            rm -f "$TMP_KEYSTORE"
+            echo "Unable to unlock private key for alias '$KEY_ALIAS' with provided KEY_PASSWORD"
             exit 1
           fi
+          rm -f "$TMP_KEYSTORE"
+          echo "Release keystore credentials validated successfully"
           
           write_env() {
             local name=$1
