@@ -6,7 +6,14 @@ def escapeForJavaString = { value ->
 
 def buglyAppId = System.getenv("KODI_ANDROID_BUGLY_APP_ID") ?: ""
 def buglyAppChannel = System.getenv("KODI_ANDROID_BUGLY_CHANNEL") ?: "official"
-def buglyUploadDebug = (System.getenv("KODI_ANDROID_BUGLY_UPLOAD_DEBUG") ?: "false").toBoolean()
+def buglyUploadDebug = (System.getenv("KODI_ANDROID_BUGLY_UPLOAD_DEBUG") ?: "true").toBoolean()
+def signingConfigDefaults = [
+    storeFile: System.getenv("KODI_ANDROID_STORE_FILE") ?: "${System.getProperty('user.home')}/.android/debug.keystore",
+    storePassword: System.getenv("KODI_ANDROID_STORE_PASSWORD") ?: "android",
+    keyAlias: System.getenv("KODI_ANDROID_KEY_ALIAS") ?: "androiddebugkey",
+    keyPassword: System.getenv("KODI_ANDROID_KEY_PASSWORD") ?: "android",
+    storeType: System.getenv("KODI_ANDROID_STORE_TYPE") ?: "pkcs12"
+]
 
 android {
     namespace = '@APP_PACKAGE@'
@@ -25,10 +32,11 @@ android {
     }
     signingConfigs {
         release {
-            keyAlias = System.getenv("KODI_ANDROID_KEY_ALIAS")
-            keyPassword = System.getenv("KODI_ANDROID_KEY_PASSWORD")
-            storeFile = file(System.getenv("KODI_ANDROID_STORE_FILE"))
-            storePassword = System.getenv("KODI_ANDROID_STORE_PASSWORD")
+            keyAlias = signingConfigDefaults.keyAlias
+            keyPassword = signingConfigDefaults.keyPassword
+            storeFile = file(signingConfigDefaults.storeFile)
+            storePassword = signingConfigDefaults.storePassword
+            storeType = signingConfigDefaults.storeType
             enableV1Signing = true
             enableV2Signing = true
             enableV3Signing = true

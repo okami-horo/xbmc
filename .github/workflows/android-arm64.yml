@@ -166,12 +166,34 @@ jobs:
           mkdir -p "$HOME/.android"
           RELEASE_KEYSTORE="$HOME/.android/kodi-release.keystore"
           printf '%s' "${{ secrets.KODI_ANDROID_KEYSTORE_BASE64 }}" | base64 --decode > "$RELEASE_KEYSTORE"
+
+          detect_store_type() {
+            for candidate in pkcs12 jks; do
+              if keytool -list -keystore "$RELEASE_KEYSTORE" -storetype "$candidate" -storepass "$STORE_PASSWORD" >/dev/null 2>&1; then
+                echo "$candidate"
+                return 0
+              fi
+            done
+            return 1
+          }
+
+          STORE_TYPE=$(detect_store_type || true)
+          if [ -z "$STORE_TYPE" ]; then
+            echo "Unable to detect keystore type (tried pkcs12, jks)"
+            exit 1
+          fi
+
+          if ! keytool -list -keystore "$RELEASE_KEYSTORE" -storetype "$STORE_TYPE" -storepass "$STORE_PASSWORD" -alias "$KEY_ALIAS" >/dev/null 2>&1; then
+            echo "Key alias '$KEY_ALIAS' not found in release keystore"
+            exit 1
+          fi
           
           {
             echo "KODI_ANDROID_STORE_FILE=$RELEASE_KEYSTORE"
             echo "KODI_ANDROID_STORE_PASSWORD=$STORE_PASSWORD"
             echo "KODI_ANDROID_KEY_ALIAS=$KEY_ALIAS"
             echo "KODI_ANDROID_KEY_PASSWORD=$KEY_PASSWORD"
+            echo "KODI_ANDROID_STORE_TYPE=$STORE_TYPE"
           } >> "$GITHUB_ENV"
       
       - name: Package APK
